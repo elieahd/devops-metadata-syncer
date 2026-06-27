@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="devops.metadata.syncer.infrastructure.outbound.database.dao.PullRequestDao">
+
+    <delete id="deleteAllByRepositoryId">
+        DELETE
+        FROM pull_request
+        WHERE repository_id = #{repositoryId}
+    </delete>
+
+    <insert id="insertAll">
+        INSERT INTO pull_request (repository_id, number, title, state, published_at, merged_at, closed_at, author,
+        is_author_user, is_merged, is_reviewed, cycle_time, review_time)
+        VALUES
+        <foreach collection="pullRequests" item="pr" separator=",">
+            (#{repositoryId},
+            #{pr.number},
+            #{pr.title},
+            #{pr.state},
+            #{pr.publishedAt},
+            #{pr.mergedAt},
+            #{pr.closedAt},
+            #{pr.author},
+            #{pr.isAuthorUser},
+            #{pr.isMerged},
+            #{pr.isReviewed},
+            #{pr.cycleTime.seconds},
+            #{pr.reviewTime.seconds}
+            )
+        </foreach>
+    </insert>
+
+    <select id="findAllByRepositoryId" resultMap="pullRequestResultMap">
+        SELECT id,
+               number,
+               title,
+               state,
+               published_at,
+               merged_at,
+               closed_at,
+               author,
+               is_author_user
+        FROM pull_request
+        WHERE repository_id = #{repositoryId}
+    </select>
+
+    <resultMap id="pullRequestResultMap" type="devops.metadata.syncer.domain.models.PullRequest">
+        <constructor>
+            <arg column="number" javaType="_int"/>
+            <arg column="title" javaType="java.lang.String"/>
+            <arg column="state" javaType="java.lang.String"/>
+            <arg column="published_at" javaType="java.time.OffsetDateTime"/>
+            <arg column="merged_at" javaType="java.time.OffsetDateTime"/>
+            <arg column="closed_at" javaType="java.time.OffsetDateTime"/>
+            <arg column="author" javaType="java.lang.String"/>
+            <arg column="is_author_user" javaType="_boolean"/>
+            <arg column="id" javaType="java.util.List"
+                 select="devops.metadata.syncer.infrastructure.outbound.database.dao.PullRequestReviewDao.findAllByPullRequestId"/>
+        </constructor>
+    </resultMap>
+
+</mapper>

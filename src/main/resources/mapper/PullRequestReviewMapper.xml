@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="devops.metadata.syncer.infrastructure.outbound.database.dao.PullRequestReviewDao">
+
+    <delete id="deleteAllByRepositoryId">
+        DELETE
+        FROM pull_request_review
+        USING pull_request
+        WHERE pull_request.id = pull_request_review.pull_request_id
+          AND pull_request.repository_id = #{repositoryId}
+    </delete>
+
+    <insert id="insertAll">
+        INSERT INTO pull_request_review (pull_request_id, reviewer, state, submitted_at)
+        VALUES
+        <foreach collection="reviews" item="review" separator=",">
+            (
+            (SELECT id FROM pull_request WHERE repository_id = #{repositoryId} AND number = #{pullRequestNumber}),
+            #{review.reviewer},
+            #{review.state},
+            #{review.submittedAt}
+            )
+        </foreach>
+    </insert>
+
+    <resultMap id="pullRequestReviewResultMap" type="devops.metadata.syncer.domain.models.PullRequestReview">
+        <constructor>
+            <arg column="reviewer" javaType="java.lang.String"/>
+            <arg column="state" javaType="java.lang.String"/>
+            <arg column="submitted_at" javaType="java.time.OffsetDateTime"/>
+        </constructor>
+    </resultMap>
+
+    <select id="findAllByPullRequestId" resultMap="pullRequestReviewResultMap">
+        SELECT reviewer,
+               state,
+               submitted_at
+        FROM pull_request_review
+        WHERE pull_request_id = #{pullRequestId}
+    </select>
+
+</mapper>

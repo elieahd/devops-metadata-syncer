@@ -1,0 +1,51 @@
+package devops.metadata.syncer.infrastructure.outbound.database;
+
+import devops.metadata.syncer.domain.models.Pipeline;
+import devops.metadata.syncer.domain.outbound.PipelineInventory;
+import devops.metadata.syncer.infrastructure.outbound.OutboundAdapter;
+import devops.metadata.syncer.infrastructure.outbound.database.dao.PipelineDao;
+import devops.metadata.syncer.infrastructure.outbound.database.dao.PipelineRunDao;
+
+import java.util.List;
+
+@OutboundAdapter
+public class PipelineInventoryDatabaseAdapter implements PipelineInventory {
+
+    private final PipelineDao pipelineDao;
+    private final PipelineRunDao pipelineRunDao;
+
+    public PipelineInventoryDatabaseAdapter(PipelineDao pipelineDao,
+                                            PipelineRunDao pipelineRunDao) {
+        this.pipelineDao = pipelineDao;
+        this.pipelineRunDao = pipelineRunDao;
+    }
+
+    @Override
+    public void deleteAllByRepositoryId(Long repositoryId) {
+        pipelineRunDao.deleteAllByRepositoryId(repositoryId);
+        pipelineDao.deleteAllByRepositoryId(repositoryId);
+    }
+
+    @Override
+    public void insertAll(Long repositoryId, List<Pipeline> pipelines) {
+
+        if (pipelines == null || pipelines.isEmpty()) {
+            return;
+        }
+
+        pipelineDao.insertAll(repositoryId, pipelines);
+
+        for (Pipeline pipeline : pipelines) {
+            if (pipeline.runs() != null && !pipeline.runs().isEmpty()) {
+                pipelineRunDao.insertAll(repositoryId, pipeline.sourceId(), pipeline.runs());
+            }
+        }
+
+    }
+
+    @Override
+    public List<Pipeline> findAllByRepositoryId(Long repositoryId) {
+        return pipelineDao.findAllByRepositoryId(repositoryId);
+    }
+
+}

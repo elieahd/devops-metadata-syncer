@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="devops.metadata.syncer.infrastructure.outbound.database.dao.ReleaseDao">
+
+    <delete id="deleteAllByRepositoryId">
+        DELETE
+        FROM release
+        WHERE repository_id = #{repositoryId}
+    </delete>
+
+    <insert id="insertAll">
+        INSERT INTO release (repository_id, name, tag_name, published_at)
+        VALUES
+        <foreach collection="releases" item="release" separator=",">
+            (#{repositoryId}, #{release.name}, #{release.tagName}, #{release.publishedAt})
+        </foreach>
+    </insert>
+
+    <select id="findAllByRepositoryId" resultMap="releaseResultMap">
+        SELECT name,
+               tag_name,
+               published_at
+        FROM release
+        WHERE repository_id = #{repositoryId}
+    </select>
+
+    <resultMap id="releaseResultMap" type="devops.metadata.syncer.domain.models.Release">
+        <constructor>
+            <arg column="name" javaType="java.lang.String"/>
+            <arg column="tag_name" javaType="java.lang.String"/>
+            <arg column="published_at" javaType="java.time.OffsetDateTime"/>
+        </constructor>
+    </resultMap>
+
+</mapper>

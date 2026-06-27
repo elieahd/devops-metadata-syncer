@@ -1,0 +1,57 @@
+databaseChangeLog:
+  - changeSet:
+      id: v0.1.0-007
+      author: elie.ahd
+      changes:
+        - createSequence:
+            sequenceName: release_id_seq
+            startValue: 1
+            incrementBy: 1
+            minValue: 1
+            cycle: false
+        - createTable:
+            tableName: release
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  defaultValueSequenceNext: release_id_seq
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: tag_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: published_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+              - column:
+                  name: repository_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_release_repository
+                    references: repository(id)
+        - createIndex:
+            indexName: idx_release_repository_id
+            tableName: release
+            columns:
+              - column:
+                  name: repository_id
+      rollback:
+        - dropIndex:
+            indexName: idx_release_repository_id
+            tableName: release
+        - dropTable:
+            tableName: release
+        - dropSequence:
+            sequenceName: release_id_seq

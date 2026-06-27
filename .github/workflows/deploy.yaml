@@ -1,0 +1,15 @@
+name: 🚀 Deploy
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  checks:
+    name: ✅ Pre-deployment checks
+    uses: ./.github/workflows/wf-checks.yaml
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

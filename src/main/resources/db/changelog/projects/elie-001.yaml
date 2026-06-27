@@ -1,0 +1,51 @@
+databaseChangeLog:
+  - changeSet:
+      id: projects-elie-001
+      author: elie.ahd
+      changes:
+        - insert:
+            tableName: project
+            columns:
+              - column:
+                  name: key
+                  value: "AHD"
+              - column:
+                  name: name
+                  value: "Elie AHD"
+        - insert:
+            tableName: repository
+            columns:
+              - column:
+                  name: organization
+                  value: "elieahd"
+              - column:
+                  name: name
+                  value: "my-docs"
+              - column:
+                  name: source
+                  value: "GITHUB"
+              - column:
+                  name: project_id
+                  valueComputed: "(SELECT id FROM project WHERE key = 'AHD')"
+        - insert:
+            tableName: repository
+            columns:
+              - column:
+                  name: organization
+                  value: "elieahd"
+              - column:
+                  name: name
+                  value: "randomizer"
+              - column:
+                  name: source
+                  value: "GITHUB"
+              - column:
+                  name: project_id
+                  valueComputed: "(SELECT id FROM project WHERE key = 'AHD')"
+      rollback:
+        - delete:
+            tableName: repository
+            where: "project_id = (SELECT id FROM project WHERE key = 'AHD')"
+        - delete:
+            tableName: project
+            where: "key = 'AHD'"

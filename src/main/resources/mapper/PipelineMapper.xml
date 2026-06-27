@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="devops.metadata.syncer.infrastructure.outbound.database.dao.PipelineDao">
+
+    <resultMap id="pipelineResultMap" type="devops.metadata.syncer.domain.models.Pipeline">
+        <constructor>
+            <arg column="name" javaType="java.lang.String"/>
+            <arg column="source_id" javaType="java.lang.String"/>
+            <arg column="id" javaType="java.util.List"
+                 select="devops.metadata.syncer.infrastructure.outbound.database.dao.PipelineRunDao.findAllByPipelineId"/>
+        </constructor>
+    </resultMap>
+
+    <select id="findAllByRepositoryId" resultMap="pipelineResultMap">
+        SELECT id,
+               name,
+               source_id
+        FROM pipeline
+        WHERE repository_id = #{repositoryId}
+    </select>
+
+    <insert id="insertAll">
+        INSERT INTO pipeline (repository_id, name, source_id)
+        VALUES
+        <foreach collection="pipelines" item="pipeline" separator=",">
+            (#{repositoryId}, #{pipeline.name}, #{pipeline.sourceId})
+        </foreach>
+    </insert>
+
+    <delete id="deleteAllByRepositoryId">
+        DELETE
+        FROM pipeline
+        WHERE repository_id = #{repositoryId}
+    </delete>
+
+</mapper>

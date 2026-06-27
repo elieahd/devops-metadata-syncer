@@ -1,0 +1,51 @@
+databaseChangeLog:
+  - changeSet:
+      id: v0.1.0-002
+      author: elie.ahd
+      changes:
+        - createSequence:
+            sequenceName: repository_id_seq
+            startValue: 1
+            incrementBy: 1
+            minValue: 1
+            cycle: false
+        - createTable:
+            tableName: repository
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  defaultValueSequenceNext: repository_id_seq
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: organization
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: source
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_sync_time
+                  type: timestamp
+              - column:
+                  name: project_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_repository_project
+                    references: project(id)
+      rollback:
+        - dropTable:
+            tableName: repository
+        - dropSequence:
+            sequenceName: repository_id_seq
