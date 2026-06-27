@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="devops.metadata.syncer.infrastructure.outbound.database.dao.ProjectDao">
+
+    <resultMap id="project" type="devops.metadata.syncer.domain.models.Project">
+        <constructor>
+            <idArg column="id" javaType="Long"/>
+            <arg column="key" javaType="String"/>
+            <arg column="name" javaType="String"/>
+        </constructor>
+    </resultMap>
+
+    <select id="findByKey" resultMap="project">
+        SELECT id,
+               key,
+               name
+        FROM project
+        WHERE key = #{key}
+    </select>
+
+    <select id="create" resultType="long">
+        INSERT INTO project (key, name)
+        VALUES (#{project.key}, #{project.name})
+        RETURNING id
+    </select>
+
+</mapper>

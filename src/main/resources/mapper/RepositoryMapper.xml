@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="devops.metadata.syncer.infrastructure.outbound.database.dao.RepositoryDao">
+
+    <resultMap id="repository" type="devops.metadata.syncer.domain.models.Repository">
+        <constructor>
+            <idArg column="id" javaType="Long"/>
+            <arg column="organization" javaType="String"/>
+            <arg column="name" javaType="String"/>
+            <arg column="source" javaType="devops.metadata.syncer.domain.models.RepositorySource"/>
+            <arg column="last_sync_time" javaType="java.time.LocalDateTime"/>
+        </constructor>
+    </resultMap>
+
+    <select id="findAllByProjectId" resultMap="repository">
+        SELECT id,
+               organization,
+               name,
+               source,
+               last_sync_time
+        FROM repository
+        WHERE project_id = #{projectId}
+    </select>
+
+    <update id="updateLastSyncTime">
+        UPDATE repository
+        SET last_sync_time = #{lastSyncTime}
+        WHERE id = #{repositoryId}
+    </update>
+
+    <select id="create" resultType="long">
+        INSERT INTO repository (project_id, organization, name, source)
+        VALUES (#{projectId}, #{repository.organization}, #{repository.name}, #{repository.source})
+        RETURNING id
+    </select>
+
+</mapper>

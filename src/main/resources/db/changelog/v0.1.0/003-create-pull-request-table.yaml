@@ -1,0 +1,102 @@
+databaseChangeLog:
+  - changeSet:
+      id: v0.1.0-003
+      author: elie.ahd
+      changes:
+        - createSequence:
+            sequenceName: pull_request_id_seq
+            startValue: 1
+            incrementBy: 1
+            minValue: 1
+            cycle: false
+        - createTable:
+            tableName: pull_request
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  defaultValueSequenceNext: pull_request_id_seq
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: number
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: state
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: published_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+              - column:
+                  name: merged_at
+                  type: timestamp with time zone
+              - column:
+                  name: closed_at
+                  type: timestamp with time zone
+              - column:
+                  name: author
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_author_user
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_merged
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_reviewed
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: cycle_time
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: review_time
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: repository_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_pull_request_repository
+                    references: repository(id)
+        - createIndex:
+            indexName: idx_pull_request_repository_id
+            tableName: pull_request
+            columns:
+              - column:
+                  name: repository_id
+        - addUniqueConstraint:
+            tableName: pull_request
+            columnNames: number, repository_id
+            constraintName: uq_pull_request_number_repository_id
+      rollback:
+        - dropIndex:
+            indexName: idx_pull_request_repository_id
+            tableName: pull_request
+        - dropTable:
+            tableName: pull_request
+        - dropSequence:
+            sequenceName: pull_request_id_seq

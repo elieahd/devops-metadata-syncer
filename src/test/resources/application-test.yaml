@@ -1,0 +1,5 @@
+source:
+  github:
+    token: TOKEN_NOT_SET
+  enterprise-github:
+    token: TOKEN_NOT_SET

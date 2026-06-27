@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS pull_request_review;
+DROP TABLE IF EXISTS pull_request;
+DROP TABLE IF EXISTS pipeline_run;
+DROP TABLE IF EXISTS pipeline;
+DROP TABLE IF EXISTS vulnerability;
+DROP TABLE IF EXISTS release;
+DROP TABLE IF EXISTS repository;
+DROP TABLE IF EXISTS project;
+DROP TABLE IF EXISTS databasechangelog;
+DROP TABLE IF EXISTS databasechangeloglock;
