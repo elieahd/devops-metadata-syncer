@@ -6,7 +6,7 @@ spring:
     banner-mode: off
   datasource:
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
-    username: ${DB_NAME}
+    username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
 source:
@@ -14,8 +14,8 @@ source:
     url: https://api.github.com
     token: ${GITHUB_TOKEN}
   enterprise-github:
-    url: https://api.github.com
-    token: ${GITHUB_TOKEN}
+    url: ${ENTERPRISE_GITHUB_URL:https://api.github.com}
+    token: ${ENTERPRISE_GITHUB_TOKEN}
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
