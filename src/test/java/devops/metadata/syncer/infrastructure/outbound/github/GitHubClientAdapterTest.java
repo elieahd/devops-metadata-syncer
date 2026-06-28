@@ -121,6 +121,18 @@ class GitHubClientAdapterTest {
     }
 
     @Test
+    void findAllPullRequests_shouldThrowGitHubException_whenIOExceptionOccurs() {
+        // Arrange
+        server.close(); // server no longer listening -> connection failure inside call()
+        // Act
+        Throwable thrown = catchThrowable(() -> adapter.findAllPullRequests(organization, repository, "all"));
+        // Assert
+        assertThat(thrown)
+                .isInstanceOf(GitHubException.class)
+                .hasCauseInstanceOf(IOException.class);
+    }
+
+    @Test
     void findAllPullRequestReviews_shouldReturnReviews_whenPullRequestNumberIsGiven() throws InterruptedException {
         // Arrange
         String body = """

@@ -18,10 +18,6 @@ public class ApplicationArgumentsHelper {
     }
 
     public Optional<String> getArg(String argName) {
-        return getArgs(argName).map(List::getFirst);
-    }
-
-    public Optional<List<String>> getArgs(String argName) {
         if (!args.containsOption(argName)) {
             return Optional.empty();
         }
@@ -32,7 +28,9 @@ public class ApplicationArgumentsHelper {
             return Optional.empty();
         }
 
-        return Optional.of(values);
+        String firstValue = values.getFirst();
+
+        return Optional.ofNullable(firstValue);
     }
 
 }
