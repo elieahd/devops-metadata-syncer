@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.devt.randomizer.RandomizerUtils.random;
 import static devops.metadata.syncer.infrastructure.outbound.github.models.GitHubModelRandomizer.aGitHubPullRequest;
 import static devops.metadata.syncer.infrastructure.outbound.github.models.GitHubModelRandomizer.aGitHubPullRequestReview;
 import static devops.metadata.syncer.infrastructure.outbound.github.models.GitHubModelRandomizer.aGitHubUser;
-import static com.devt.randomizer.RandomizerUtils.random;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class GitHubPullRequestMapperTest {

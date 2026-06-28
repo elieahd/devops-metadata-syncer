@@ -1,5 +1,7 @@
 package devops.metadata.syncer.domain.models;
 
+import devops.metadata.syncer.domain.models.randomizers.PullRequestRandomizer;
+import devops.metadata.syncer.domain.models.randomizers.PullRequestReviewRandomizer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -7,73 +9,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.Duration;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static devops.metadata.syncer.domain.models.ModelRandomizer.aPullRequest;
-import static devops.metadata.syncer.domain.models.ModelRandomizer.aPullRequestReview;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PullRequestTest {
-
-    @Test
-    void isMerged_shouldReturnFalse_whenMergedAtIsNull() {
-        // Arrange
-        OffsetDateTime mergedAt = null;
-        PullRequest sut = aPullRequest(mergedAt);
-        // Act
-        boolean isMerged = sut.isMerged();
-        // Assert
-        assertThat(isMerged).isFalse();
-    }
-
-    @Test
-    void isMerged_shouldReturnTrue_whenMergedAtIsNotNull() {
-        // Arrange
-        OffsetDateTime mergedAt = OffsetDateTime.now();
-        PullRequest sut = aPullRequest(mergedAt);
-        // Act
-        boolean isMerged = sut.isMerged();
-        // Assert
-        assertThat(isMerged).isTrue();
-    }
-
-    @Test
-    void isReviewed_shouldReturnFalse_whenReviewsIsNull() {
-        // Arrange
-        List<PullRequestReview> reviews = null;
-        PullRequest sut = aPullRequest(reviews);
-        // Act
-        boolean isReviewed = sut.isReviewed();
-        // Assert
-        assertThat(isReviewed).isFalse();
-    }
-
-    @Test
-    void isReviewed_shouldReturnFalse_whenReviewsIsEmpty() {
-        // Arrange
-        List<PullRequestReview> reviews = new ArrayList<>();
-        PullRequest sut = aPullRequest(reviews);
-        // Act
-        boolean isReviewed = sut.isReviewed();
-        // Assert
-        assertThat(isReviewed).isFalse();
-    }
-
-    @Test
-    void isReviewed_shouldReturnTrue_whenReviewsIsNotEmpty() {
-        // Arrange
-        List<PullRequestReview> reviews = List.of(
-                aPullRequestReview(),
-                aPullRequestReview()
-        );
-        PullRequest sut = aPullRequest(reviews);
-        // Act
-        boolean isReviewed = sut.isReviewed();
-        // Assert
-        assertThat(isReviewed).isTrue();
-    }
 
     private static Stream<Arguments> provideCycleTime() {
 
@@ -108,20 +49,6 @@ class PullRequestTest {
         );
     }
 
-    @ParameterizedTest
-    @MethodSource("provideCycleTime")
-    void cycleTime_shouldReturnDuration(OffsetDateTime publishedAt,
-                                        OffsetDateTime mergedAt,
-                                        OffsetDateTime closedAt,
-                                        Duration expectedCycleTime) {
-        // Arrange
-        PullRequest sut = aPullRequest(publishedAt, mergedAt, closedAt);
-        // Act
-        Duration cycleTime = sut.cycleTime();
-        // Assert
-        assertThat(cycleTime).isEqualTo(expectedCycleTime);
-    }
-
     private static Stream<Arguments> provideReviewTime() {
 
         OffsetDateTime mergedAt = OffsetDateTime.parse("2024-01-05T10:00:00Z");
@@ -134,10 +61,23 @@ class PullRequestTest {
         String reviewer1 = "reviewer-1";
         String reviewer2 = "reviewer-2";
 
-        PullRequestReview reviewByAuthor = aPullRequestReview(author, authorReviewSubmittedAt);
-        PullRequestReview reviewByReviewer1 = aPullRequestReview(reviewer1, firstReviewerSubmittedAt);
-        PullRequestReview reviewByReviewer2 = aPullRequestReview(reviewer2, secondReviewerSubmittedAt);
-        PullRequestReview reviewWithNullUser = aPullRequestReview(null, firstReviewerSubmittedAt);
+
+        PullRequestReview reviewByAuthor = PullRequestReviewRandomizer.builder()
+                .reviewer(author)
+                .publishedAt(authorReviewSubmittedAt)
+                .build();
+        PullRequestReview reviewByReviewer1 = PullRequestReviewRandomizer.builder()
+                .reviewer(reviewer1)
+                .publishedAt(firstReviewerSubmittedAt)
+                .build();
+        PullRequestReview reviewByReviewer2 = PullRequestReviewRandomizer.builder()
+                .reviewer(reviewer2)
+                .publishedAt(secondReviewerSubmittedAt)
+                .build();
+        PullRequestReview reviewWithNullUser = PullRequestReviewRandomizer.builder()
+                .reviewer(null)
+                .publishedAt(firstReviewerSubmittedAt)
+                .build();
 
         return Stream.of(
                 // mergedAt is null -> ZERO regardless of reviews
@@ -173,6 +113,84 @@ class PullRequestTest {
         );
     }
 
+    @Test
+    void isMerged_shouldReturnFalse_whenMergedAtIsNull() {
+        // Arrange
+        OffsetDateTime mergedAt = null;
+        PullRequest sut = PullRequestRandomizer.builder()
+                .mergedAt(mergedAt)
+                .build();
+        // Act
+        boolean isMerged = sut.isMerged();
+        // Assert
+        assertThat(isMerged).isFalse();
+    }
+
+    @Test
+    void isMerged_shouldReturnTrue_whenMergedAtIsNotNull() {
+        // Arrange
+        OffsetDateTime mergedAt = OffsetDateTime.now();
+        PullRequest sut = PullRequestRandomizer.builder()
+                .mergedAt(mergedAt)
+                .build();
+        // Act
+        boolean isMerged = sut.isMerged();
+        // Assert
+        assertThat(isMerged).isTrue();
+    }
+
+    @Test
+    void isReviewed_shouldReturnFalse_whenReviewsIsNull() {
+        // Arrange
+        PullRequest sut = PullRequestRandomizer.builder()
+                .reviews(null)
+                .build();
+        // Act
+        boolean isReviewed = sut.isReviewed();
+        // Assert
+        assertThat(isReviewed).isFalse();
+    }
+
+    @Test
+    void isReviewed_shouldReturnFalse_whenReviewsIsEmpty() {
+        // Arrange
+        PullRequest sut = PullRequestRandomizer.builder()
+                .reviews(List.of())
+                .build();
+        // Act
+        boolean isReviewed = sut.isReviewed();
+        // Assert
+        assertThat(isReviewed).isFalse();
+    }
+
+    @Test
+    void isReviewed_shouldReturnTrue_whenReviewsIsNotEmpty() {
+        // Arrange
+        PullRequest sut = PullRequestRandomizer.random();
+        // Act
+        boolean isReviewed = sut.isReviewed();
+        // Assert
+        assertThat(isReviewed).isTrue();
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideCycleTime")
+    void cycleTime_shouldReturnDuration(OffsetDateTime publishedAt,
+                                        OffsetDateTime mergedAt,
+                                        OffsetDateTime closedAt,
+                                        Duration expectedCycleTime) {
+        // Arrange
+        PullRequest sut = PullRequestRandomizer.builder()
+                .publishedAt(publishedAt)
+                .mergedAt(mergedAt)
+                .closedAt(closedAt)
+                .build();
+        // Act
+        Duration cycleTime = sut.cycleTime();
+        // Assert
+        assertThat(cycleTime).isEqualTo(expectedCycleTime);
+    }
+
     @ParameterizedTest
     @MethodSource("provideReviewTime")
     void reviewTime_shouldReturnDuration(OffsetDateTime mergedAt,
@@ -180,7 +198,11 @@ class PullRequestTest {
                                          List<PullRequestReview> reviews,
                                          Duration expectedReviewTime) {
         // Arrange
-        PullRequest sut = aPullRequest(mergedAt, author, reviews);
+        PullRequest sut = PullRequestRandomizer.builder()
+                .author(author)
+                .mergedAt(mergedAt)
+                .reviews(reviews)
+                .build();
         // Act
         Duration reviewTime = sut.reviewTime();
         // Assert

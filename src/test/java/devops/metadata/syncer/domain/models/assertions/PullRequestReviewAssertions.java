@@ -15,10 +15,13 @@ public class PullRequestReviewAssertions extends AbstractAssert<PullRequestRevie
     }
 
     public PullRequestReviewAssertions isEqualTo(PullRequestReview expected) {
+
         isNotNull();
+
         Assertions.assertThat(actual.reviewer()).isEqualTo(expected.reviewer());
         Assertions.assertThat(actual.state()).isEqualTo(expected.state());
         Assertions.assertThat(actual.submittedAt()).isEqualTo(expected.submittedAt());
+
         return this;
     }
 }

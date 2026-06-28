@@ -2,8 +2,8 @@ package devops.metadata.syncer.infrastructure.outbound.github.models;
 
 import org.junit.jupiter.api.Test;
 
-import static devops.metadata.syncer.infrastructure.outbound.github.models.GitHubModelRandomizer.aGitHubWorkflowRun;
 import static com.devt.randomizer.RandomizerUtils.random;
+import static devops.metadata.syncer.infrastructure.outbound.github.models.GitHubModelRandomizer.aGitHubWorkflowRun;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class GitHubWorkflowRunTest {

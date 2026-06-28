@@ -1,5 +1,6 @@
 package devops.metadata.syncer.domain.models;
 
+import devops.metadata.syncer.domain.models.randomizers.PipelineRunRandomizer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -8,7 +9,6 @@ import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.stream.Stream;
 
-import static devops.metadata.syncer.domain.models.ModelRandomizer.aPipelineRun;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PipelineRunTest {
@@ -35,7 +35,10 @@ class PipelineRunTest {
                                   OffsetDateTime updatedAt,
                                   Duration expectedDuration) {
         // Arrange
-        PipelineRun sut = aPipelineRun(startedAt, updatedAt);
+        PipelineRun sut = PipelineRunRandomizer.builder()
+                .startedAt(startedAt)
+                .updatedAt(updatedAt)
+                .build();
         // Act
         Duration duration = sut.duration();
         // Assert

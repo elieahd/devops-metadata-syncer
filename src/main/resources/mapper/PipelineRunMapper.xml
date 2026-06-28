@@ -41,7 +41,7 @@
     <delete id="deleteAllByRepositoryId">
         DELETE
         FROM pipeline_run
-            USING pipeline
+        USING pipeline
         WHERE pipeline.id = pipeline_run.pipeline_id
           AND pipeline.repository_id = #{repositoryId}
     </delete>

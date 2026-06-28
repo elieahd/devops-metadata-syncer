@@ -1,11 +1,11 @@
 package devops.metadata.syncer.infrastructure.outbound.database;
 
 import devops.metadata.syncer.domain.models.Pipeline;
-import devops.metadata.syncer.domain.models.PipelineRun;
 import devops.metadata.syncer.domain.models.Project;
 import devops.metadata.syncer.domain.models.Repository;
 import devops.metadata.syncer.domain.models.RepositorySource;
 import devops.metadata.syncer.domain.models.assertions.PipelineAssertions;
+import devops.metadata.syncer.domain.models.randomizers.PipelineRandomizer;
 import devops.metadata.syncer.infrastructure.OutboundDatabaseIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 
-import static devops.metadata.syncer.domain.models.ModelRandomizer.aPipeline;
-import static devops.metadata.syncer.domain.models.ModelRandomizer.aPipelineRun;
 import static com.devt.randomizer.RandomizerUtils.random;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,11 +34,14 @@ class PipelineInventoryDatabaseAdapterTest extends OutboundDatabaseIntegrationTe
         Repository repository = createRepository(project);
         Repository anotherRepository = createRepository(project);
 
-        Pipeline pipeline1 = aPipeline(List.of(aPipelineRun(), aPipelineRun()));
-        Pipeline pipeline2 = aPipeline(List.of());
-        List<PipelineRun> nullRuns = null;
-        Pipeline pipeline3 = aPipeline(nullRuns);
-        Pipeline pipeline4 = aPipeline(List.of(aPipelineRun(), aPipelineRun()));
+        Pipeline pipeline1 = PipelineRandomizer.random();
+        Pipeline pipeline2 = PipelineRandomizer.builder()
+                .runs(List.of())
+                .build();
+        Pipeline pipeline3 = PipelineRandomizer.builder()
+                .runs(null)
+                .build();
+        Pipeline pipeline4 = PipelineRandomizer.random();
 
         sut.insertAll(repository.id(), List.of(pipeline1, pipeline2, pipeline3));
         sut.insertAll(anotherRepository.id(), List.of(pipeline4));
@@ -84,11 +85,10 @@ class PipelineInventoryDatabaseAdapterTest extends OutboundDatabaseIntegrationTe
         Repository repository = createRepository(project);
         Repository anotherRepository = createRepository(project);
 
-        Pipeline pipeline1 = aPipeline(List.of(aPipelineRun(), aPipelineRun()));
-        Pipeline pipeline2 = aPipeline(List.of());
-        List<PipelineRun> nullRuns = null;
-        Pipeline pipeline3 = aPipeline(nullRuns);
-        Pipeline pipeline4 = aPipeline(List.of(aPipelineRun(), aPipelineRun()));
+        Pipeline pipeline1 = PipelineRandomizer.random();
+        Pipeline pipeline2 = PipelineRandomizer.builder().runs(List.of()).build();
+        Pipeline pipeline3 = PipelineRandomizer.builder().runs(null).build();
+        Pipeline pipeline4 = PipelineRandomizer.random();
 
         sut.insertAll(repository.id(), List.of(pipeline1, pipeline2, pipeline3));
         sut.insertAll(anotherRepository.id(), List.of(pipeline4));

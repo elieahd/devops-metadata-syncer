@@ -2,10 +2,10 @@ package devops.metadata.syncer.infrastructure.outbound.database;
 
 import devops.metadata.syncer.domain.models.Project;
 import devops.metadata.syncer.domain.models.PullRequest;
-import devops.metadata.syncer.domain.models.PullRequestReview;
 import devops.metadata.syncer.domain.models.Repository;
 import devops.metadata.syncer.domain.models.RepositorySource;
 import devops.metadata.syncer.domain.models.assertions.PullRequestAssertions;
+import devops.metadata.syncer.domain.models.randomizers.PullRequestRandomizer;
 import devops.metadata.syncer.infrastructure.OutboundDatabaseIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 
-import static devops.metadata.syncer.domain.models.ModelRandomizer.aPullRequest;
-import static devops.metadata.syncer.domain.models.ModelRandomizer.aPullRequestReview;
 import static com.devt.randomizer.RandomizerUtils.random;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,11 +34,10 @@ class PullRequestInventoryDatabaseAdapterTest extends OutboundDatabaseIntegratio
         Repository repository = createRepository(project);
         Repository anotherRepository = createRepository(project);
 
-        PullRequest pullRequest1 = aPullRequest(List.of(aPullRequestReview(), aPullRequestReview()));
-        PullRequest pullRequest2 = aPullRequest(new ArrayList<>());
-        List<PullRequestReview> nullReviews = null;
-        PullRequest pullRequest3 = aPullRequest(nullReviews);
-        PullRequest pullRequest4 = aPullRequest(List.of(aPullRequestReview(), aPullRequestReview()));
+        PullRequest pullRequest1 = PullRequestRandomizer.random();
+        PullRequest pullRequest2 = PullRequestRandomizer.builder().reviews(List.of()).build();
+        PullRequest pullRequest3 = PullRequestRandomizer.builder().reviews(null).build();
+        PullRequest pullRequest4 = PullRequestRandomizer.random();
 
         sut.insertAll(repository.id(), List.of(pullRequest1, pullRequest2, pullRequest3));
         sut.insertAll(anotherRepository.id(), List.of(pullRequest4));
@@ -84,11 +81,10 @@ class PullRequestInventoryDatabaseAdapterTest extends OutboundDatabaseIntegratio
         Repository repository = createRepository(project);
         Repository anotherRepository = createRepository(project);
 
-        PullRequest pullRequest1 = aPullRequest(List.of(aPullRequestReview(), aPullRequestReview()));
-        PullRequest pullRequest2 = aPullRequest(new ArrayList<>());
-        List<PullRequestReview> nullReviews = null;
-        PullRequest pullRequest3 = aPullRequest(nullReviews);
-        PullRequest pullRequest4 = aPullRequest(List.of(aPullRequestReview(), aPullRequestReview()));
+        PullRequest pullRequest1 = PullRequestRandomizer.random();
+        PullRequest pullRequest2 = PullRequestRandomizer.builder().reviews(List.of()).build();
+        PullRequest pullRequest3 = PullRequestRandomizer.builder().reviews(null).build();
+        PullRequest pullRequest4 = PullRequestRandomizer.random();
 
         sut.insertAll(repository.id(), List.of(pullRequest1, pullRequest2, pullRequest3));
         sut.insertAll(anotherRepository.id(), List.of(pullRequest4));

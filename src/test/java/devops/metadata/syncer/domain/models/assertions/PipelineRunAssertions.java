@@ -17,12 +17,15 @@ public class PipelineRunAssertions extends AbstractAssert<PipelineRunAssertions,
     }
 
     public PipelineRunAssertions isEqualTo(PipelineRun expected) {
+
         isNotNull();
+
         Assertions.assertThat(actual.success()).isEqualTo(expected.success());
         Assertions.assertThat(actual.startedAt()).isEqualTo(expected.startedAt());
         Assertions.assertThat(actual.createdAt()).isEqualTo(expected.createdAt());
         Assertions.assertThat(actual.updatedAt()).isEqualTo(expected.updatedAt());
         Assertions.assertThat(actual.duration()).isCloseTo(expected.duration(), Duration.ofSeconds(1));
+
         return this;
     }
 }

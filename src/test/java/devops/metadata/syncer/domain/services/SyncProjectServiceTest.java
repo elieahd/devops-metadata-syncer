@@ -5,6 +5,8 @@ import devops.metadata.syncer.domain.exceptions.SourceNotFoundException;
 import devops.metadata.syncer.domain.inbound.SyncProject;
 import devops.metadata.syncer.domain.models.Project;
 import devops.metadata.syncer.domain.models.Repository;
+import devops.metadata.syncer.domain.models.randomizers.ProjectRandomizer;
+import devops.metadata.syncer.domain.models.randomizers.RepositoryRandomizer;
 import devops.metadata.syncer.domain.outbound.ProjectInventory;
 import devops.metadata.syncer.domain.outbound.ProjectInventoryStub;
 import devops.metadata.syncer.domain.outbound.RepositoryInventory;
@@ -12,8 +14,6 @@ import devops.metadata.syncer.domain.outbound.RepositoryInventoryStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static devops.metadata.syncer.domain.models.ModelRandomizer.aProject;
-import static devops.metadata.syncer.domain.models.ModelRandomizer.aRepository;
 import static com.devt.randomizer.RandomizerUtils.random;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -52,7 +52,7 @@ class SyncProjectServiceTest {
     @Test
     void sync_shouldDoNothing_whenNoRepositoriesFoundPerProject() throws SourceNotFoundException, ProjectNotFoundException {
         // Arrange
-        Project project = aProject();
+        Project project = ProjectRandomizer.random();
         projectInventory.create(project);
         // Act
         sut.sync(project.key());
@@ -63,16 +63,16 @@ class SyncProjectServiceTest {
     @Test
     void sync_shouldSyncAllRepositories() throws SourceNotFoundException, ProjectNotFoundException {
         // Arrange
-        Project project = aProject();
+        Project project = ProjectRandomizer.random();
         projectInventory.create(project);
-        Repository repository1 = aRepository();
+        Repository repository1 = RepositoryRandomizer.random();
         repositoryInventory.create(project.id(), repository1);
-        Repository repository2 = aRepository();
+        Repository repository2 = RepositoryRandomizer.random();
         repositoryInventory.create(project.id(), repository2);
 
-        Project anotherProject = aProject();
+        Project anotherProject = ProjectRandomizer.random();
         projectInventory.create(anotherProject);
-        Repository repository3 = aRepository();
+        Repository repository3 = RepositoryRandomizer.random();
         repositoryInventory.create(anotherProject.id(), repository3);
         // Act
         sut.sync(project.key());

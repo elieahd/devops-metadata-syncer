@@ -15,10 +15,13 @@ public class ReleaseAssertions extends AbstractAssert<ReleaseAssertions, Release
     }
 
     public ReleaseAssertions isEqualTo(Release expected) {
+
         isNotNull();
+
         Assertions.assertThat(actual.name()).isEqualTo(expected.name());
         Assertions.assertThat(actual.tagName()).isEqualTo(expected.tagName());
         Assertions.assertThat(actual.publishedAt()).isEqualTo(expected.publishedAt());
+
         return this;
     }
 }
