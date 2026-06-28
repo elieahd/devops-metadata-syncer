@@ -27,6 +27,7 @@ public class SyncProjectCommand implements Command {
 
     @Override
     public void execute(ApplicationArguments args) throws Exception {
+
         ApplicationArgumentsHelper arguments = ApplicationArgumentsHelper.of(args);
 
         String projectKey = arguments

@@ -12,6 +12,11 @@ import devops.metadata.syncer.domain.models.assertions.PipelineAssertions;
 import devops.metadata.syncer.domain.models.assertions.PullRequestAssertions;
 import devops.metadata.syncer.domain.models.assertions.ReleaseAssertions;
 import devops.metadata.syncer.domain.models.assertions.VulnerabilityAssertions;
+import devops.metadata.syncer.domain.models.randomizers.PipelineRandomizer;
+import devops.metadata.syncer.domain.models.randomizers.PullRequestRandomizer;
+import devops.metadata.syncer.domain.models.randomizers.ReleaseRandomizer;
+import devops.metadata.syncer.domain.models.randomizers.RepositoryRandomizer;
+import devops.metadata.syncer.domain.models.randomizers.VulnerabilityRandomizer;
 import devops.metadata.syncer.domain.outbound.PipelineInventory;
 import devops.metadata.syncer.domain.outbound.PipelineInventoryStub;
 import devops.metadata.syncer.domain.outbound.PullRequestInventory;
@@ -30,11 +35,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static devops.metadata.syncer.domain.models.ModelRandomizer.aPipeline;
-import static devops.metadata.syncer.domain.models.ModelRandomizer.aPullRequest;
-import static devops.metadata.syncer.domain.models.ModelRandomizer.aRelease;
-import static devops.metadata.syncer.domain.models.ModelRandomizer.aRepository;
-import static devops.metadata.syncer.domain.models.ModelRandomizer.aVulnerability;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
@@ -76,15 +76,17 @@ class SyncRepositoryServiceTest {
     @Test
     void sync_shouldSyncPullRequests() throws SourceNotFoundException {
         // Arrange
-        Repository repository = aRepository(RepositorySource.GITHUB);
+        Repository repository = RepositoryRandomizer.builder()
+                .source(RepositorySource.GITHUB)
+                .build();
         List<PullRequest> existingPRs = List.of(
-                aPullRequest(),
-                aPullRequest()
+                PullRequestRandomizer.random(),
+                PullRequestRandomizer.random()
         );
         pullRequestInventory.insertAll(repository.id(), existingPRs);
         List<PullRequest> newPRs = List.of(
-                aPullRequest(),
-                aPullRequest()
+                PullRequestRandomizer.random(),
+                PullRequestRandomizer.random()
         );
         sourceRepositoryInventory.pushPullRequests(repository.organization(), repository.name(), newPRs);
         // Act
@@ -102,15 +104,17 @@ class SyncRepositoryServiceTest {
     @Test
     void sync_shouldSyncPipelines() throws SourceNotFoundException {
         // Arrange
-        Repository repository = aRepository(RepositorySource.GITHUB);
+        Repository repository = RepositoryRandomizer.builder()
+                .source(RepositorySource.GITHUB)
+                .build();
         List<Pipeline> existingPipelines = List.of(
-                aPipeline(),
-                aPipeline()
+                PipelineRandomizer.random(),
+                PipelineRandomizer.random()
         );
         pipelineInventory.insertAll(repository.id(), existingPipelines);
         List<Pipeline> newPipelines = List.of(
-                aPipeline(),
-                aPipeline()
+                PipelineRandomizer.random(),
+                PipelineRandomizer.random()
         );
         sourceRepositoryInventory.pushWorkflows(repository.organization(), repository.name(), newPipelines);
         // Act
@@ -128,15 +132,17 @@ class SyncRepositoryServiceTest {
     @Test
     void sync_shouldSyncReleases() throws SourceNotFoundException {
         // Arrange
-        Repository repository = aRepository(RepositorySource.GITHUB);
+        Repository repository = RepositoryRandomizer.builder()
+                .source(RepositorySource.GITHUB)
+                .build();
         List<Release> existingReleases = List.of(
-                aRelease(),
-                aRelease()
+                ReleaseRandomizer.random(),
+                ReleaseRandomizer.random()
         );
         releaseInventory.insertAll(repository.id(), existingReleases);
         List<Release> newReleases = List.of(
-                aRelease(),
-                aRelease()
+                ReleaseRandomizer.random(),
+                ReleaseRandomizer.random()
         );
         sourceRepositoryInventory.pushReleases(repository.organization(), repository.name(), newReleases);
         // Act
@@ -154,15 +160,17 @@ class SyncRepositoryServiceTest {
     @Test
     void sync_shouldSyncVulnerabilities() throws SourceNotFoundException {
         // Arrange
-        Repository repository = aRepository(RepositorySource.GITHUB);
+        Repository repository = RepositoryRandomizer.builder()
+                .source(RepositorySource.GITHUB)
+                .build();
         List<Vulnerability> existingVulnerabilities = List.of(
-                aVulnerability(),
-                aVulnerability()
+                VulnerabilityRandomizer.random(),
+                VulnerabilityRandomizer.random()
         );
         vulnerabilityInventory.insertAll(repository.id(), existingVulnerabilities);
         List<Vulnerability> newVulnerabilities = List.of(
-                aVulnerability(),
-                aVulnerability()
+                VulnerabilityRandomizer.random(),
+                VulnerabilityRandomizer.random()
         );
         sourceRepositoryInventory.pushVulnerabilities(repository.organization(), repository.name(), newVulnerabilities);
         // Act
@@ -181,7 +189,10 @@ class SyncRepositoryServiceTest {
     void sync_shouldUpdateLastSyncTime() throws SourceNotFoundException {
         // Arrange
         LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
-        Repository repository = aRepository(RepositorySource.GITHUB, yesterday);
+        Repository repository = RepositoryRandomizer.builder()
+                .source(RepositorySource.GITHUB)
+                .lastSyncTime(yesterday)
+                .build();
         // Act
         sut.sync(repository);
         // Assert
@@ -194,7 +205,9 @@ class SyncRepositoryServiceTest {
     @Test
     void sync_shouldThrowException_whenSourceNotFound() {
         // Arrange
-        Repository repository = aRepository(RepositorySource.UNKNOWN);
+        Repository repository = RepositoryRandomizer.builder()
+                .source(RepositorySource.UNKNOWN)
+                .build();
         // Act
         Throwable thrown = catchThrowable(() -> sut.sync(repository));
         // Assert

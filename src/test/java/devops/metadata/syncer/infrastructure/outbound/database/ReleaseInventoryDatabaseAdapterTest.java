@@ -5,6 +5,7 @@ import devops.metadata.syncer.domain.models.Release;
 import devops.metadata.syncer.domain.models.Repository;
 import devops.metadata.syncer.domain.models.RepositorySource;
 import devops.metadata.syncer.domain.models.assertions.ReleaseAssertions;
+import devops.metadata.syncer.domain.models.randomizers.ReleaseRandomizer;
 import devops.metadata.syncer.infrastructure.OutboundDatabaseIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 
-import static devops.metadata.syncer.domain.models.ModelRandomizer.aRelease;
 import static com.devt.randomizer.RandomizerUtils.random;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,10 +33,10 @@ class ReleaseInventoryDatabaseAdapterTest extends OutboundDatabaseIntegrationTes
         Project project = createProject();
         Repository repository = createRepository(project);
         Repository anotherRepository = createRepository(project);
-        Release release1 = aRelease();
-        Release release2 = aRelease();
+        Release release1 = ReleaseRandomizer.random();
+        Release release2 = ReleaseRandomizer.random();
         sut.insertAll(repository.id(), List.of(release1, release2));
-        Release release3 = aRelease();
+        Release release3 = ReleaseRandomizer.random();
         sut.insertAll(anotherRepository.id(), List.of(release3));
         // Act
         List<Release> releases = sut.findAllByRepositoryId(repository.id());
@@ -76,10 +76,10 @@ class ReleaseInventoryDatabaseAdapterTest extends OutboundDatabaseIntegrationTes
         Project project = createProject();
         Repository repository = createRepository(project);
         Repository anotherRepository = createRepository(project);
-        Release release1 = aRelease();
-        Release release2 = aRelease();
+        Release release1 = ReleaseRandomizer.random();
+        Release release2 = ReleaseRandomizer.random();
         sut.insertAll(repository.id(), List.of(release1, release2));
-        Release release3 = aRelease();
+        Release release3 = ReleaseRandomizer.random();
         sut.insertAll(anotherRepository.id(), List.of(release3));
         // Act
         sut.deleteAllByRepositoryId(repository.id());

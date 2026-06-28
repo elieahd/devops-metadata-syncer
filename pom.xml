@@ -9,7 +9,10 @@
     <artifactId>devops-metadata-syncer</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>DevOps Metadata Syncer</name>
-    <description>DevOps Metadata Syncer</description>
+    <description>
+        DevOps Metadata Syncer : tool that pull DevOps metadata (Pull Requests, Pipelines, Releases,
+        Vulnerabilities) from multiple repositories given a project
+    </description>
 
     <dependencyManagement>
         <dependencies>

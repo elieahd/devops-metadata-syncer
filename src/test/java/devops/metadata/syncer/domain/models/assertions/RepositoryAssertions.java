@@ -15,12 +15,15 @@ public class RepositoryAssertions extends AbstractAssert<RepositoryAssertions, R
     }
 
     public RepositoryAssertions isEqualTo(Repository expected) {
+
         isNotNull();
+
         Assertions.assertThat(actual.id()).isEqualTo(expected.id());
         Assertions.assertThat(actual.organization()).isEqualTo(expected.organization());
         Assertions.assertThat(actual.name()).isEqualTo(expected.name());
         Assertions.assertThat(actual.source()).isEqualTo(expected.source());
         Assertions.assertThat(actual.lastSyncTime()).isEqualTo(expected.lastSyncTime());
+
         return this;
     }
 
