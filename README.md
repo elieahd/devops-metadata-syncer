@@ -1,8 +1,8 @@
 # DevOps Metadata Syncer
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=elieahd_devops-metadata-syncer&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=elieahd_devops-metadata-syncer)
-
 ![java-26](https://img.shields.io/badge/java-26-red)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=elieahd_devops-metadata-syncer&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=elieahd_devops-metadata-syncer)
+[![codecov](https://codecov.io/github/elieahd/randomizer/graph/badge.svg?token=Z8LY9K22WV)](https://codecov.io/github/elieahd/randomizer)
 
 A tool that pull DevOps metadata (Pull Requests, Pipelines, Releases, Vulnerabilities) from multiple repositories given
 a project
@@ -121,3 +121,11 @@ classDiagram
     PullRequest "1" --> "*" PullRequestReview: has
     Repository "1" --> "1" RepositorySource: source
 ```
+
+## Pipelines
+
+| Event            | Description                                                                | Pipeline                                                                                                                                                                                                                                | 
+|------------------|----------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `push` on `main` | Pre-Checks (test + codecov + sonar)                                        | [![🚀 Deploy](https://github.com/elieahd/devops-metadata-syncer/actions/workflows/deploy.yaml/badge.svg)](https://github.com/elieahd/devops-metadata-syncer/actions/workflows/deploy.yaml)                                              |
+| `pull request`   | Checks (test + sonar)                                                      | [![✅ PR checks](https://github.com/elieahd/devops-metadata-syncer/actions/workflows/pr-checks.yaml/badge.svg)](https://github.com/elieahd/devops-metadata-syncer/actions/workflows/pr-checks.yaml)                                      |
+| `weekly`         | Dependabot updates <br/> maintaining maven and github actions dependencies | [![Dependabot Updates](https://github.com/elieahd/devops-metadata-syncer/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/elieahd/devops-metadata-syncer/actions/workflows/dependabot/dependabot-updates) |
