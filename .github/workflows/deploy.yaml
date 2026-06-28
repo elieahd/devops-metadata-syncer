@@ -11,5 +11,8 @@ jobs:
   checks:
     name: ✅ Pre-deployment checks
     uses: ./.github/workflows/wf-checks.yaml
+    with:
+      upload-codecov: true
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
