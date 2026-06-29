@@ -1,12 +1,14 @@
 package devops.metadata.syncer.domain.outbound;
 
 import devops.metadata.syncer.domain.models.Repository;
+import devops.metadata.syncer.domain.models.RepositorySource;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class RepositoryInventoryStub implements RepositoryInventory {
 
@@ -33,6 +35,17 @@ public class RepositoryInventoryStub implements RepositoryInventory {
                 .computeIfAbsent(projectId, _ -> new ArrayList<>())
                 .add(repository);
         return repository;
+    }
+
+    @Override
+    public Optional<Repository> findOneByOrganizationAndNameAndSource(String organization,
+                                                                      String name,
+                                                                      RepositorySource source) {
+        return repositoriesByProjectId.values()
+                .stream()
+                .flatMap(List::stream)
+                .filter(repository -> organization.equals(repository.organization()) && name.equals(repository.name()) && source.equals(repository.source()))
+                .findFirst();
     }
 
     public LocalDateTime getLastSyncTime(Repository repository) {

@@ -1,5 +1,6 @@
 package devops.metadata.syncer.domain.services;
 
+import devops.metadata.syncer.domain.exceptions.RepositoryNotFoundException;
 import devops.metadata.syncer.domain.exceptions.SourceNotFoundException;
 import devops.metadata.syncer.domain.inbound.SyncRepository;
 import devops.metadata.syncer.domain.models.Pipeline;
@@ -35,6 +36,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.devt.randomizer.RandomizerUtils.random;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
@@ -71,6 +73,40 @@ class SyncRepositoryServiceTest {
                 releaseInventory,
                 vulnerabilityInventory
         );
+    }
+
+    @Test
+    void sync_shouldThrowException_whenRepositoryNotFound() {
+        // Arrange
+        String organization = random(String.class);
+        String repositoryName = random(String.class);
+        RepositorySource source = random(RepositorySource.class);
+        // Act
+        Throwable thrown = catchThrowable(() -> sut.sync(organization, repositoryName, source));
+        // Assert
+        assertThat(thrown)
+                .isInstanceOf(RepositoryNotFoundException.class)
+                .hasMessage(String.format("Repository %s/%s (%s) not found", organization, repositoryName, source));
+    }
+
+    @Test
+    void syncRaw_shouldUpdateLastSyncTime() throws SourceNotFoundException {
+        // Arrange
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
+        Repository repository = repositoryInventory.create(random(Long.class), RepositoryRandomizer.builder()
+                .source(RepositorySource.GITHUB)
+                .lastSyncTime(yesterday)
+                .build());
+        String organization = repository.organization();
+        String repositoryName = repository.name();
+        RepositorySource source = repository.source();
+        // Act
+        sut.sync(organization, repositoryName, source);
+        // Assert
+        LocalDateTime lastSyncTime = repositoryInventory.getLastSyncTime(repository);
+        assertThat(lastSyncTime)
+                .isNotNull()
+                .isCloseTo(LocalDateTime.now(), within(Duration.ofSeconds(5)));
     }
 
     @Test

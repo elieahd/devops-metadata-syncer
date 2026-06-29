@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 import static com.devt.randomizer.RandomizerUtils.random;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,6 +74,35 @@ class RepositoryInventoryDatabaseAdapterTest extends OutboundDatabaseIntegration
                 .hasSize(1);
         assertThat(repositories.getFirst().lastSyncTime()).isCloseTo(lastSyncTime, within(Duration.ofSeconds(2)));
     }
+
+    @Test
+    void findOneByOrganizationAndNameAndSource_shouldReturnOptionalEmpty_whenNotFound() {
+        // Arrange
+        String organization = random(String.class);
+        String name = random(String.class);
+        RepositorySource source = random(RepositorySource.class);
+        // Act
+        Optional<Repository> repository = sut.findOneByOrganizationAndNameAndSource(organization, name, source);
+        // Assert
+        assertThat(repository).isEmpty();
+    }
+
+    @Test
+    void findOneByOrganizationAndNameAndSource_shouldReturnOptionalOfRepository_evenIfItsCaseInsensitive() {
+        // Arrange
+        Project project = projectInventory.create(Project.of(random(String.class), random(String.class)));
+        Repository existingRepository = createRepository(project);
+
+        String organization = existingRepository.organization().toLowerCase(Locale.ROOT);
+        String name = existingRepository.name().toUpperCase(Locale.ROOT);
+        RepositorySource source = existingRepository.source();
+        // Act
+        Optional<Repository> repository = sut.findOneByOrganizationAndNameAndSource(organization, name, source);
+        // Assert
+        assertThat(repository).isPresent();
+        RepositoryAssertions.assertThat(repository.get()).isEqualTo(existingRepository);
+    }
+
 
     private Repository createRepository(Project project) {
         return sut.create(project.id(), Repository.of(random(String.class), random(String.class), random(RepositorySource.class)));
