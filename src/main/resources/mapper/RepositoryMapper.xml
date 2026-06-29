@@ -14,6 +14,19 @@
         </constructor>
     </resultMap>
 
+    <select id="findOneByOrganizationAndNameAndSource" resultMap="repository">
+        SELECT id,
+               organization,
+               name,
+               source,
+               last_sync_time
+        FROM repository
+        WHERE LOWER(organization) = LOWER(#{organization})
+          AND LOWER(name) = LOWER(#{name})
+          AND source = #{source}
+        LIMIT 1
+    </select>
+
     <select id="findAllByProjectId" resultMap="repository">
         SELECT id,
                organization,

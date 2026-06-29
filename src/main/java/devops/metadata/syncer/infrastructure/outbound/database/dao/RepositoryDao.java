@@ -1,6 +1,7 @@
 package devops.metadata.syncer.infrastructure.outbound.database.dao;
 
 import devops.metadata.syncer.domain.models.Repository;
+import devops.metadata.syncer.domain.models.RepositorySource;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,4 +19,7 @@ public interface RepositoryDao {
     Long create(@Param("projectId") Long projectId,
                 @Param("repository") Repository repository);
 
+    Repository findOneByOrganizationAndNameAndSource(@Param("organization") String organization,
+                                                     @Param("name") String name,
+                                                     @Param("source") RepositorySource source);
 }

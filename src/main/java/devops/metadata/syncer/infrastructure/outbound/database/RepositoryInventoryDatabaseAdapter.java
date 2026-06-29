@@ -1,12 +1,14 @@
 package devops.metadata.syncer.infrastructure.outbound.database;
 
 import devops.metadata.syncer.domain.models.Repository;
+import devops.metadata.syncer.domain.models.RepositorySource;
 import devops.metadata.syncer.domain.outbound.RepositoryInventory;
 import devops.metadata.syncer.infrastructure.outbound.OutboundAdapter;
 import devops.metadata.syncer.infrastructure.outbound.database.dao.RepositoryDao;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @OutboundAdapter
 public class RepositoryInventoryDatabaseAdapter implements RepositoryInventory {
@@ -38,4 +40,13 @@ public class RepositoryInventoryDatabaseAdapter implements RepositoryInventory {
                 null
         );
     }
+
+    @Override
+    public Optional<Repository> findOneByOrganizationAndNameAndSource(String organization,
+                                                                      String name,
+                                                                      RepositorySource source) {
+        Repository repository = dao.findOneByOrganizationAndNameAndSource(organization, name, source);
+        return Optional.ofNullable(repository);
+    }
+
 }

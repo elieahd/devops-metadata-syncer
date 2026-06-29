@@ -37,6 +37,32 @@ java -jar devops-metadata-syncer.jar \
   --name=MyProject 
 ```
 
+### `sync-repository`
+
+Sync Metadata for a given repository
+
+**Arguments:**
+
+| Argument        | Required | Type   | Description                                           |
+|-----------------|----------|--------|-------------------------------------------------------|
+| `--organiation` | Yes      | String | The repository organization                           |
+| `--repository`  | Yes      | String | The repository name                                   |
+| `--source`      | No       | String | The repository Source (GitHub, EnterpriseGitHub, ...) |
+
+**Usage:**
+
+```
+--command=sync-repository --organization=<org> --repository=<repository> --source=<source>
+```
+
+```bash
+java -jar devops-metadata-syncer.jar \
+  --command=sync-repository \
+  --organization=<org> \
+  --repository=<repository> \ 
+  --source=<source>
+```
+
 ## Data Model
 
 The following class diagram describes the internal data structures of a Project

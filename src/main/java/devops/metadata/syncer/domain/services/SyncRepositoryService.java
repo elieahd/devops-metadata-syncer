@@ -1,11 +1,13 @@
 package devops.metadata.syncer.domain.services;
 
+import devops.metadata.syncer.domain.exceptions.RepositoryNotFoundException;
 import devops.metadata.syncer.domain.exceptions.SourceNotFoundException;
 import devops.metadata.syncer.domain.inbound.SyncRepository;
 import devops.metadata.syncer.domain.models.Pipeline;
 import devops.metadata.syncer.domain.models.PullRequest;
 import devops.metadata.syncer.domain.models.Release;
 import devops.metadata.syncer.domain.models.Repository;
+import devops.metadata.syncer.domain.models.RepositorySource;
 import devops.metadata.syncer.domain.models.Vulnerability;
 import devops.metadata.syncer.domain.outbound.PipelineInventory;
 import devops.metadata.syncer.domain.outbound.PullRequestInventory;
@@ -41,6 +43,15 @@ public class SyncRepositoryService implements SyncRepository {
         this.pipelineInventory = pipelineInventory;
         this.releaseInventory = releaseInventory;
         this.vulnerabilityInventory = vulnerabilityInventory;
+    }
+
+    @Override
+    public void sync(String organization,
+                     String repositoryName,
+                     RepositorySource repositorySource) throws RepositoryNotFoundException, SourceNotFoundException {
+        Repository repository = repositoryInventory.findOneByOrganizationAndNameAndSource(organization, repositoryName, repositorySource)
+                .orElseThrow(() -> new RepositoryNotFoundException(organization, repositoryName, repositorySource));
+        sync(repository);
     }
 
     @Override

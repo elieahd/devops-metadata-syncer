@@ -44,7 +44,14 @@ databaseChangeLog:
                     nullable: false
                     foreignKeyName: fk_repository_project
                     references: project(id)
+        - addUniqueConstraint:
+            tableName: repository
+            columnNames: organization, name, source
+            constraintName: uq_repository_org_name_source
       rollback:
+        - dropUniqueConstraint:
+            tableName: repository
+            constraintName: uq_repository_org_name_source
         - dropTable:
             tableName: repository
         - dropSequence:
