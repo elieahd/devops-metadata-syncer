@@ -13,6 +13,13 @@
         </constructor>
     </resultMap>
 
+    <select id="findIdByRepositoryIdAndSourceId" resultType="java.lang.Long">
+        SELECT id
+        FROM pipeline
+        WHERE repository_id = #{repositoryId}
+          AND source_id = #{pipelineSourceId}
+    </select>
+
     <select id="findAllByRepositoryId" resultMap="pipelineResultMap">
         SELECT id,
                name,

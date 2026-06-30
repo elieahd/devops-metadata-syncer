@@ -16,4 +16,6 @@ public interface PipelineDao {
 
     List<Pipeline> findAllByRepositoryId(@Param("repositoryId") Long repositoryId);
 
+    Long findIdByRepositoryIdAndSourceId(@Param("repositoryId") Long repositoryId,
+                                         @Param("pipelineSourceId") String pipelineSourceId);
 }

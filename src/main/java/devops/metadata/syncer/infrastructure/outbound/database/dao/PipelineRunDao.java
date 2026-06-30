@@ -9,8 +9,7 @@ import java.util.List;
 @Mapper
 public interface PipelineRunDao {
 
-    void insertAll(@Param("repositoryId") Long repositoryId,
-                   @Param("pipelineSourceId") String pipelineSourceId,
+    void insertAll(@Param("pipelineId") Long pipelineId,
                    @Param("runs") List<PipelineRun> runs);
 
     void deleteAllByRepositoryId(@Param("repositoryId") Long repositoryId);

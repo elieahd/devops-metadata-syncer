@@ -13,7 +13,6 @@ public interface PullRequestReviewDao {
 
     void deleteAllByRepositoryId(@Param("repositoryId") Long repositoryId);
 
-    void insertAll(@Param("repositoryId") Long repositoryId,
-                   @Param("pullRequestNumber") Integer pullRequestId,
+    void insertAll(@Param("pullRequestId") Long pullRequestId,
                    @Param("reviews") List<PullRequestReview> reviews);
 }

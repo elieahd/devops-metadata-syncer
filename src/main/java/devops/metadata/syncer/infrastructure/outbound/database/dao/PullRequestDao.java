@@ -15,4 +15,7 @@ public interface PullRequestDao {
                    @Param("pullRequests") List<PullRequest> pullRequests);
 
     List<PullRequest> findAllByRepositoryId(@Param("repositoryId") Long repositoryId);
+
+    Long findIdByRepositoryIdAndNumber(@Param("repositoryId") Long repositoryId,
+                                       @Param("pullRequestNumber") Integer pullRequestNumber);
 }

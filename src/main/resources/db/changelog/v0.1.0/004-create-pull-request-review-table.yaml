@@ -22,8 +22,6 @@ databaseChangeLog:
               - column:
                   name: reviewer
                   type: varchar(255)
-                  constraints:
-                    nullable: false
               - column:
                   name: state
                   type: varchar(100)

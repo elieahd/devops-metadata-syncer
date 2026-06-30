@@ -28,7 +28,7 @@
         VALUES
         <foreach collection="runs" item="run" separator=",">
             (
-            (SELECT id FROM pipeline WHERE repository_id = #{repositoryId} AND source_id = #{pipelineSourceId}),
+            #{pipelineId},
             #{run.success},
             #{run.startedAt},
             #{run.createdAt},

@@ -5,6 +5,7 @@ import devops.metadata.syncer.domain.outbound.PullRequestInventory;
 import devops.metadata.syncer.infrastructure.outbound.OutboundAdapter;
 import devops.metadata.syncer.infrastructure.outbound.database.dao.PullRequestDao;
 import devops.metadata.syncer.infrastructure.outbound.database.dao.PullRequestReviewDao;
+import devops.metadata.syncer.infrastructure.outbound.database.utils.Partitioner;
 
 import java.util.List;
 
@@ -33,11 +34,14 @@ public class PullRequestInventoryDatabaseAdapter implements PullRequestInventory
             return;
         }
 
-        pullRequestDao.insertAll(repositoryId, pullRequests);
+        Partitioner
+                .partition(pullRequests, 10000)
+                .forEach(chunkOfPullRequests -> pullRequestDao.insertAll(repositoryId, chunkOfPullRequests));
 
         for (PullRequest pr : pullRequests) {
             if (pr.reviews() != null && !pr.reviews().isEmpty()) {
-                pullRequestReviewDao.insertAll(repositoryId, pr.number(), pr.reviews());
+                Long pullRequestId = pullRequestDao.findIdByRepositoryIdAndNumber(repositoryId, pr.number());
+                pullRequestReviewDao.insertAll(pullRequestId, pr.reviews());
             }
         }
     }
