@@ -5,6 +5,7 @@ import devops.metadata.syncer.domain.outbound.PipelineInventory;
 import devops.metadata.syncer.infrastructure.outbound.OutboundAdapter;
 import devops.metadata.syncer.infrastructure.outbound.database.dao.PipelineDao;
 import devops.metadata.syncer.infrastructure.outbound.database.dao.PipelineRunDao;
+import devops.metadata.syncer.infrastructure.outbound.database.utils.Partitioner;
 
 import java.util.List;
 
@@ -37,7 +38,9 @@ public class PipelineInventoryDatabaseAdapter implements PipelineInventory {
 
         for (Pipeline pipeline : pipelines) {
             if (pipeline.runs() != null && !pipeline.runs().isEmpty()) {
-                pipelineRunDao.insertAll(repositoryId, pipeline.sourceId(), pipeline.runs());
+                Long pipelineId = pipelineDao.findIdByRepositoryIdAndSourceId(repositoryId, pipeline.sourceId());
+                Partitioner.partition(pipeline.runs(), 10000)
+                        .forEach(chunkOfPipelineRuns -> pipelineRunDao.insertAll(pipelineId, chunkOfPipelineRuns));
             }
         }
 

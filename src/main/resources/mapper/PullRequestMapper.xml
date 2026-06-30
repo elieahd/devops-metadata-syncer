@@ -31,6 +31,13 @@
         </foreach>
     </insert>
 
+    <select id="findIdByRepositoryIdAndNumber" resultType="java.lang.Long">
+        SELECT id
+        FROM pull_request
+        WHERE repository_id = #{repositoryId}
+          AND number = #{pullRequestNumber}
+    </select>
+
     <select id="findAllByRepositoryId" resultMap="pullRequestResultMap">
         SELECT id,
                number,

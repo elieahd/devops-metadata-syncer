@@ -16,12 +16,7 @@
         VALUES
         <foreach collection="reviews" item="review" separator=",">
             (
-                (
-                    SELECT id
-                    FROM pull_request
-                    WHERE repository_id = #{repositoryId}
-                      AND number = #{pullRequestNumber}
-                ),
+                #{pullRequestId},
                 #{review.reviewer},
                 #{review.state},
                 #{review.submittedAt}
