@@ -89,10 +89,9 @@ public class GitHubClientAdapter implements GitHubClient {
 
     @Override
     public List<GitHubDependabotAlert> findAllDependabotAlerts(String organization, String repository) {
-        String url = "%s/repos/%s/%s/dependabot/alerts".formatted(baseUrl, organization, repository);
-        GitHubResponse<List<GitHubDependabotAlert>> response = call(url, new TypeReference<>() {
+        String url = "%s/repos/%s/%s/dependabot/alerts?per_page=%d".formatted(baseUrl, organization, repository, PAGE_SIZE);
+        return callUntilLastPage(url, new TypeReference<>() {
         });
-        return response.data();
     }
 
     // -------------------------------------------------------------------------
