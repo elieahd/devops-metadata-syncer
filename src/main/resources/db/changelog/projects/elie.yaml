@@ -13,6 +13,21 @@ databaseChangeLog:
                   name: name
                   value: "Elie AHD"
         - insert:
+            tableName: project_contact
+            columns:
+              - column:
+                  name: first_name
+                  value: "Elie"
+              - column:
+                  name: last_name
+                  value: "Daher"
+              - column:
+                  name: mail
+                  value: "eliedhr@gmail.com"
+              - column:
+                  name: project_id
+                  valueComputed: "(SELECT id FROM project WHERE key = 'AHD')"
+        - insert:
             tableName: repository
             columns:
               - column:
@@ -43,6 +58,9 @@ databaseChangeLog:
                   name: project_id
                   valueComputed: "(SELECT id FROM project WHERE key = 'AHD')"
       rollback:
+        - delete:
+            tableName: project_contact
+            where: "project_id = (SELECT id FROM project WHERE key = 'AHD')"
         - delete:
             tableName: repository
             where: "project_id = (SELECT id FROM project WHERE key = 'AHD')"
