@@ -34,7 +34,7 @@ jobs:
 
       - name: 🔍 Upload coverage reports to Codecov
         if: ${{ inputs.upload-codecov }}
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: elieahd/devops-metadata-syncer
