@@ -9,6 +9,7 @@ import devops.platform.domain.inbound.GetProjects;
 import devops.platform.domain.inbound.GetRepositories;
 import devops.platform.domain.inbound.SyncProject;
 import devops.platform.domain.models.Project;
+import devops.platform.domain.models.ReportType;
 import devops.platform.domain.models.Repository;
 import devops.platform.infrastructure.inbound.rest.requests.CreateReportRequest;
 import devops.platform.infrastructure.inbound.rest.responses.ErrorResponse;
@@ -16,6 +17,7 @@ import devops.platform.infrastructure.inbound.rest.responses.ProjectView;
 import devops.platform.infrastructure.inbound.rest.responses.RepositoryView;
 import devops.platform.infrastructure.inbound.rest.responses.ResponseEntityMapper;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -178,7 +180,7 @@ public class ProjectRest {
                                             example = """
                                                     {
                                                         "errorCode": "BAD_REQUEST",
-                                                        "errorMessage": "'{reportType}' report type is invalid"
+                                                        "errorMessage": "'{reportType}' report type is invalid, available options: [MORNING_CHECK]"
                                                     }
                                                     """
                                     )
@@ -194,7 +196,7 @@ public class ProjectRest {
                                             example = """
                                                     {
                                                         "errorCode": "BAD_REQUEST",
-                                                        "errorMessage": "'{reportStatus}' report status is invalid"
+                                                        "errorMessage": "'{reportStatus}' report status is invalid, available options: [SUCCESS, FAILED]"
                                                     }
                                                     """
                                     )
@@ -203,7 +205,12 @@ public class ProjectRest {
             }
     )
     public ResponseEntity<Void> addReportToProject(@PathVariable String projectKey,
-                                                   @PathVariable String reportType,
+                                                   @PathVariable
+                                                   @Parameter(
+                                                           description = "Type of report",
+                                                           schema = @Schema(implementation = ReportType.class),
+                                                           example = "MORNING_CHECK"
+                                                   ) String reportType,
                                                    @RequestBody CreateReportRequest request) throws ProjectNotFoundException, InvalidReportStatusException, InvalidReportTypeException {
         createProjectReport.create(projectKey, reportType, request.status(), request.metadata());
         return ResponseEntity.accepted().build();
