@@ -143,10 +143,69 @@ public class ProjectRest {
         return ResponseEntity.accepted().build();
     }
 
-    @PostMapping("{projectKey}/reports")
+    @PostMapping("{projectKey}/reports/{reportType}")
+    @Operation(
+            summary = "Add Report to project",
+            description = "Add Report to project",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "202",
+                            description = "Report added to Project"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Project not found by key",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class,
+                                            example = """
+                                                    {
+                                                        "errorCode": "NOT_FOUND",
+                                                        "errorMessage": "Project '{projectKey}' not found"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Report Type is not valid",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class,
+                                            example = """
+                                                    {
+                                                        "errorCode": "BAD_REQUEST",
+                                                        "errorMessage": "'{reportType}' report type is invalid"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Report status is not valid",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class,
+                                            example = """
+                                                    {
+                                                        "errorCode": "BAD_REQUEST",
+                                                        "errorMessage": "'{reportStatus}' report status is invalid"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    )
+            }
+    )
     public ResponseEntity<Void> addReportToProject(@PathVariable String projectKey,
+                                                   @PathVariable String reportType,
                                                    @RequestBody CreateReportRequest request) throws ProjectNotFoundException, InvalidReportStatusException, InvalidReportTypeException {
-        createProjectReport.create(projectKey, request.type(), request.status(), request.metadata());
+        createProjectReport.create(projectKey, reportType, request.status(), request.metadata());
         return ResponseEntity.accepted().build();
     }
 

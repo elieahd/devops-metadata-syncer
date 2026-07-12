@@ -150,13 +150,13 @@ class ProjectRestTest extends RestIntegrationTest {
     void addReportToProject_shouldThrowException_whenProjectNotFound() {
         // Arrange
         String projectKey = ProjectRandomizer.key();
+        String reportType = random(ReportType.class).toString();
         CreateReportRequest request = new CreateReportRequest(
-                random(ReportType.class).toString(),
                 random(ReportStatus.class).toString(),
                 ReportRandomizer.metadata()
         );
         // Act
-        ResponseEntity<ErrorResponse> response = post("api/v1/projects/%s/reports".formatted(projectKey), request, ErrorResponse.class);
+        ResponseEntity<ErrorResponse> response = post("api/v1/projects/%s/reports/%s".formatted(projectKey, reportType), request, ErrorResponse.class);
         // Assert
         ResponseEntityAssertions.assertThat(response).is404();
         ErrorResponseAssertions.assertThat(response.getBody())
@@ -168,49 +168,49 @@ class ProjectRestTest extends RestIntegrationTest {
     void addReportToProject_shouldThrowException_whenReportTypeIsInvalid() {
         // Arrange
         Project project = createProject();
+        String reportType = random(String.class);
         CreateReportRequest request = new CreateReportRequest(
-                random(String.class),
                 random(ReportStatus.class).toString(),
                 ReportRandomizer.metadata()
         );
         // Act
-        ResponseEntity<ErrorResponse> response = post("api/v1/projects/%s/reports".formatted(project.key()), request, ErrorResponse.class);
+        ResponseEntity<ErrorResponse> response = post("api/v1/projects/%s/reports/%s".formatted(project.key(), reportType), request, ErrorResponse.class);
         // Assert
         ResponseEntityAssertions.assertThat(response).is400();
         ErrorResponseAssertions.assertThat(response.getBody())
                 .hasCode("BAD_REQUEST")
-                .hasMessage("'%s' report type is invalid".formatted(request.type()));
+                .hasMessage("'%s' report type is invalid, available options : [MORNING_CHECK]".formatted(reportType));
     }
 
     @Test
     void addReportToProject_shouldThrowException_whenReportStatusIsInvalid() {
         // Arrange
         Project project = createProject();
+        String reportType = random(ReportType.class).toString();
         CreateReportRequest request = new CreateReportRequest(
-                random(ReportType.class).toString(),
                 random(String.class),
                 ReportRandomizer.metadata()
         );
         // Act
-        ResponseEntity<ErrorResponse> response = post("api/v1/projects/%s/reports".formatted(project.key()), request, ErrorResponse.class);
+        ResponseEntity<ErrorResponse> response = post("api/v1/projects/%s/reports/%s".formatted(project.key(), reportType), request, ErrorResponse.class);
         // Assert
         ResponseEntityAssertions.assertThat(response).is400();
         ErrorResponseAssertions.assertThat(response.getBody())
                 .hasCode("BAD_REQUEST")
-                .hasMessage("'%s' report status is invalid".formatted(request.status()));
+                .hasMessage("'%s' report status is invalid, available options : [SUCCESS, FAILED]".formatted(request.status()));
     }
 
     @Test
     void addReportToProject_shouldStoreReport() {
         // Arrange
         Project project = createProject();
+        String reportType = random(ReportType.class).toString();
         CreateReportRequest request = new CreateReportRequest(
-                random(ReportType.class).toString(),
                 random(ReportStatus.class).toString(),
                 ReportRandomizer.metadata()
         );
         // Act
-        ResponseEntity<String> response = post("api/v1/projects/%s/reports".formatted(project.key()), request, String.class);
+        ResponseEntity<String> response = post("api/v1/projects/%s/reports/%s".formatted(project.key(), reportType), request, String.class);
         // Assert
         ResponseEntityAssertions.assertThat(response).is202();
         List<Report> reports = reportInventory.findAllByProjectId(project.id());
@@ -220,7 +220,7 @@ class ProjectRestTest extends RestIntegrationTest {
                 .hasSize(1);
 
         ReportAssertions.assertThat(reports.getFirst())
-                .hasType(ReportType.valueOf(request.type()))
+                .hasType(ReportType.valueOf(reportType))
                 .hasStatus(ReportStatus.valueOf(request.status()))
                 .hasMetadata(request.metadata())
                 .hasCreatedDateAsNow();
