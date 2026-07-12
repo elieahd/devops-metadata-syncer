@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="devops.metadata.syncer.infrastructure.outbound.database.dao.PullRequestDao">
+<mapper namespace="devops.platform.infrastructure.outbound.database.dao.PullRequestDao">
 
     <delete id="deleteAllByRepositoryId">
         DELETE
@@ -52,7 +52,7 @@
         WHERE repository_id = #{repositoryId}
     </select>
 
-    <resultMap id="pullRequestResultMap" type="devops.metadata.syncer.domain.models.PullRequest">
+    <resultMap id="pullRequestResultMap" type="devops.platform.domain.models.PullRequest">
         <constructor>
             <arg column="number" javaType="_int"/>
             <arg column="title" javaType="java.lang.String"/>
@@ -63,7 +63,7 @@
             <arg column="author" javaType="java.lang.String"/>
             <arg column="is_author_user" javaType="_boolean"/>
             <arg column="id" javaType="java.util.List"
-                 select="devops.metadata.syncer.infrastructure.outbound.database.dao.PullRequestReviewDao.findAllByPullRequestId"/>
+                 select="devops.platform.infrastructure.outbound.database.dao.PullRequestReviewDao.findAllByPullRequestId"/>
         </constructor>
     </resultMap>
 

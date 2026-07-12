@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="devops.platform.infrastructure.outbound.database.dao.ReportDao">
+
+    <insert id="create">
+        INSERT INTO project_report(project_id, type, status, created_at, metadata)
+        VALUES (#{project.id},
+                #{report.type},
+                #{report.status},
+                #{report.createdAt},
+                #{report.metadata}::jsonb)
+    </insert>
+
+    <select id="findAllByProjectId" resultMap="reportResultMap">
+        SELECT type,
+               status,
+               created_at,
+               metadata
+        FROM project_report
+        WHERE project_id = #{projectId}
+    </select>
+
+    <resultMap id="reportResultMap" type="devops.platform.domain.models.Report">
+        <constructor>
+            <arg column="type" javaType="devops.platform.domain.models.ReportType"/>
+            <arg column="status" javaType="devops.platform.domain.models.ReportStatus"/>
+            <arg column="created_at" javaType="java.time.LocalDateTime"/>
+            <arg column="metadata" javaType="java.lang.String"/>
+        </constructor>
+    </resultMap>
+
+</mapper>

@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: organization-personal-001
+      author: elie.ahd
+      changes:
+        - insert:
+            tableName: organization
+            columns:
+              - column:
+                  name: label
+                  value: "Personal"
+      rollback:
+        - delete:
+            tableName: organization
+            where: "label = 'Personal'"

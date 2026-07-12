@@ -2,4 +2,6 @@ databaseChangeLog:
   - include:
       file: db/changelog/v0.1.0/changelog.yaml
   - include:
+      file: db/changelog/organizations/changelog.yaml
+  - include:
       file: db/changelog/projects/changelog.yaml

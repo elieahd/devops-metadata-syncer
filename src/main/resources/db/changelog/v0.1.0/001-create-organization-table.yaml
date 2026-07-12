@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: v0.1.0-001
+      author: elie.ahd
+      changes:
+        - createSequence:
+            sequenceName: organization_id_seq
+            startValue: 1
+            incrementBy: 1
+            minValue: 1
+            cycle: false
+        - createTable:
+            tableName: organization
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  defaultValueSequenceNext: organization_id_seq
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: label
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: parent_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_organization_parent
+                    references: organization(id)
+      rollback:
+        - dropTable:
+            tableName: organization
+        - dropSequence:
+            sequenceName: organization_id_seq
