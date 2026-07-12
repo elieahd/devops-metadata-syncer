@@ -64,7 +64,7 @@ class CreateProjectReportTest {
         // Assert
         assertThat(thrown)
                 .isInstanceOf(InvalidReportTypeException.class)
-                .hasMessage("'%s' report type is invalid".formatted(type));
+                .hasMessage("'%s' report type is invalid, available options: [MORNING_CHECK]".formatted(type));
 
     }
 
@@ -80,7 +80,7 @@ class CreateProjectReportTest {
         // Assert
         assertThat(thrown)
                 .isInstanceOf(InvalidReportStatusException.class)
-                .hasMessage("'%s' report status is invalid".formatted(status));
+                .hasMessage("'%s' report status is invalid, available options: [SUCCESS, FAILED]".formatted(status));
     }
 
     @Test
