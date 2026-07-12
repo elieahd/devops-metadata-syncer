@@ -9,6 +9,7 @@ import devops.platform.domain.inbound.GetProjects;
 import devops.platform.domain.inbound.GetRepositories;
 import devops.platform.domain.inbound.SyncProject;
 import devops.platform.domain.models.Project;
+import devops.platform.domain.models.ReportType;
 import devops.platform.domain.models.Repository;
 import devops.platform.infrastructure.inbound.rest.requests.CreateReportRequest;
 import devops.platform.infrastructure.inbound.rest.responses.ErrorResponse;
@@ -16,6 +17,7 @@ import devops.platform.infrastructure.inbound.rest.responses.ProjectView;
 import devops.platform.infrastructure.inbound.rest.responses.RepositoryView;
 import devops.platform.infrastructure.inbound.rest.responses.ResponseEntityMapper;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -143,10 +145,74 @@ public class ProjectRest {
         return ResponseEntity.accepted().build();
     }
 
-    @PostMapping("{projectKey}/reports")
+    @PostMapping("{projectKey}/reports/{reportType}")
+    @Operation(
+            summary = "Add Report to project",
+            description = "Add Report to project",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "202",
+                            description = "Report added to Project"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Project not found by key",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class,
+                                            example = """
+                                                    {
+                                                        "errorCode": "NOT_FOUND",
+                                                        "errorMessage": "Project '{projectKey}' not found"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Report Type is not valid",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class,
+                                            example = """
+                                                    {
+                                                        "errorCode": "BAD_REQUEST",
+                                                        "errorMessage": "'{reportType}' report type is invalid, available options: [MORNING_CHECK]"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Report status is not valid",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class,
+                                            example = """
+                                                    {
+                                                        "errorCode": "BAD_REQUEST",
+                                                        "errorMessage": "'{reportStatus}' report status is invalid, available options: [SUCCESS, FAILED]"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    )
+            }
+    )
     public ResponseEntity<Void> addReportToProject(@PathVariable String projectKey,
+                                                   @PathVariable
+                                                   @Parameter(
+                                                           description = "Type of report",
+                                                           schema = @Schema(implementation = ReportType.class),
+                                                           example = "MORNING_CHECK"
+                                                   ) String reportType,
                                                    @RequestBody CreateReportRequest request) throws ProjectNotFoundException, InvalidReportStatusException, InvalidReportTypeException {
-        createProjectReport.create(projectKey, request.type(), request.status(), request.metadata());
+        createProjectReport.create(projectKey, reportType, request.status(), request.metadata());
         return ResponseEntity.accepted().build();
     }
 
