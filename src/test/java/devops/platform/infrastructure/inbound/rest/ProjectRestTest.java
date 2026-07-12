@@ -168,7 +168,7 @@ class ProjectRestTest extends RestIntegrationTest {
     void addReportToProject_shouldThrowException_whenReportTypeIsInvalid() {
         // Arrange
         Project project = createProject();
-        String reportType = random(String.class);
+        String reportType = random(String.class).replaceAll("[A-Z]", "");
         CreateReportRequest request = new CreateReportRequest(
                 random(ReportStatus.class).toString(),
                 ReportRandomizer.metadata()
