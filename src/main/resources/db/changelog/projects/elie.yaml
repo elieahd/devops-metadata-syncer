@@ -12,6 +12,9 @@ databaseChangeLog:
               - column:
                   name: name
                   value: "Elie AHD"
+              - column:
+                  name: organization_id
+                  valueComputed: "(SELECT id FROM organization WHERE label = 'Personal')"
         - insert:
             tableName: project_contact
             columns:

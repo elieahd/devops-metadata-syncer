@@ -1,0 +1,53 @@
+databaseChangeLog:
+  - changeSet:
+      id: v0.1.0-011
+      author: elie.ahd
+      changes:
+        - createSequence:
+            sequenceName: project_report_id_seq
+            startValue: 1
+            incrementBy: 1
+            minValue: 1
+            cycle: false
+        - createTable:
+            tableName: project_report
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  defaultValueSequenceNext: project_report_id_seq
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: project_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_project_report_project
+                    references: project(id)
+              - column:
+                  name: type
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: metadata
+                  type: jsonb
+                  constraints:
+                    nullable: true
+      rollback:
+        - dropTable:
+            tableName: project_report
+        - dropSequence:
+            sequenceName: project_report_id_seq

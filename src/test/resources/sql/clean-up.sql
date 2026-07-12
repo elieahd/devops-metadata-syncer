@@ -1,0 +1,10 @@
+DELETE FROM project_report;
+DELETE FROM project_contact;
+DELETE FROM pull_request_review;
+DELETE FROM pull_request;
+DELETE FROM pipeline_run;
+DELETE FROM pipeline;
+DELETE FROM vulnerability;
+DELETE FROM release;
+DELETE FROM repository;
+DELETE FROM project;

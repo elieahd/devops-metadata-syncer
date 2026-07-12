@@ -1,13 +1,18 @@
 spring:
   application:
-    name: DevOps Metadata Syncer
+    name: DevOps Platform API
   main:
-    web-application-type: none
     banner-mode: off
   datasource:
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+
+springdoc:
+  swagger-ui:
+    enabled: ${DOC_ENABLED:false}
+  api-docs:
+    enabled: ${DOC_ENABLED:false}
 
 source:
   github:
@@ -19,4 +24,4 @@ source:
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-  type-handlers-package: devops.metadata.syncer.infrastructure.outbound.database.types
+  type-handlers-package: devops.platform.infrastructure.outbound.database.types

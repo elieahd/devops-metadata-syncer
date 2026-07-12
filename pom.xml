@@ -6,12 +6,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.devops</groupId>
-    <artifactId>devops-metadata-syncer</artifactId>
+    <artifactId>devops-platform</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>DevOps Metadata Syncer</name>
+    <name>DevOps Platform</name>
     <description>
-        DevOps Metadata Syncer : tool that pull DevOps metadata (Pull Requests, Pipelines, Releases,
-        Vulnerabilities) from multiple repositories given a project
+        DevOps Platform : tool that pull DevOps metadata (Pull Requests, Pipelines, Releases,
+        Vulnerabilities) from multiple repositories given a project, and also will store health check reports
     </description>
 
     <dependencyManagement>
@@ -34,6 +34,7 @@
         <spring.boot.version>4.1.0</spring.boot.version>
         <okhttp.version>5.4.0</okhttp.version>
         <mybatis.version>4.0.1</mybatis.version>
+        <spring.doc.version>3.0.3</spring.doc.version>
         <!-- test dependencies -->
         <archunit.version>1.4.2</archunit.version>
         <randomizer.version>0.2.3</randomizer.version>
@@ -47,17 +48,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>${mybatis.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>provided</scope>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -66,6 +57,21 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>${mybatis.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${spring.doc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
@@ -120,7 +126,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring.boot.version}</version>
                 <configuration>
-                    <mainClass>devops.metadata.syncer.DevOpsMetadataSyncer</mainClass>
+                    <mainClass>devops.platform.DevOpsPlatformApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

@@ -2,14 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="devops.metadata.syncer.infrastructure.outbound.database.dao.PipelineDao">
+<mapper namespace="devops.platform.infrastructure.outbound.database.dao.PipelineDao">
 
-    <resultMap id="pipelineResultMap" type="devops.metadata.syncer.domain.models.Pipeline">
+    <resultMap id="pipelineResultMap" type="devops.platform.domain.models.Pipeline">
         <constructor>
             <arg column="name" javaType="java.lang.String"/>
             <arg column="source_id" javaType="java.lang.String"/>
             <arg column="id" javaType="java.util.List"
-                 select="devops.metadata.syncer.infrastructure.outbound.database.dao.PipelineRunDao.findAllByPipelineId"/>
+                 select="devops.platform.infrastructure.outbound.database.dao.PipelineRunDao.findAllByPipelineId"/>
         </constructor>
     </resultMap>
 

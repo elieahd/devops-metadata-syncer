@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="devops.metadata.syncer.infrastructure.outbound.database.dao.PipelineRunDao">
+<mapper namespace="devops.platform.infrastructure.outbound.database.dao.PipelineRunDao">
 
-    <resultMap id="pipelineRunResultMap" type="devops.metadata.syncer.domain.models.PipelineRun">
+    <resultMap id="pipelineRunResultMap" type="devops.platform.domain.models.PipelineRun">
         <constructor>
             <arg column="success" javaType="_boolean"/>
             <arg column="started_at" javaType="java.time.OffsetDateTime"/>

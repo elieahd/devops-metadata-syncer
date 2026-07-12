@@ -2,14 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="devops.metadata.syncer.infrastructure.outbound.database.dao.RepositoryDao">
+<mapper namespace="devops.platform.infrastructure.outbound.database.dao.RepositoryDao">
 
-    <resultMap id="repository" type="devops.metadata.syncer.domain.models.Repository">
+    <resultMap id="repository" type="devops.platform.domain.models.Repository">
         <constructor>
             <idArg column="id" javaType="Long"/>
             <arg column="organization" javaType="String"/>
             <arg column="name" javaType="String"/>
-            <arg column="source" javaType="devops.metadata.syncer.domain.models.RepositorySource"/>
+            <arg column="source" javaType="devops.platform.domain.models.RepositorySource"/>
             <arg column="last_sync_time" javaType="java.time.LocalDateTime"/>
         </constructor>
     </resultMap>
@@ -35,6 +35,16 @@
                last_sync_time
         FROM repository
         WHERE project_id = #{projectId}
+    </select>
+
+    <select id="findAllByProjectKey" resultMap="repository">
+        SELECT repository.id,
+               repository.organization,
+               repository.name,
+               repository.source,
+               repository.last_sync_time
+        FROM repository
+        JOIN project ON project.id = repository.project_id AND project.key = #{projectKey}
     </select>
 
     <update id="updateLastSyncTime">
