@@ -4,6 +4,8 @@ import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 import org.springframework.http.ResponseEntity;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class ResponseEntityAssertions extends AbstractAssert<ResponseEntityAssertions, ResponseEntity<?>> {
 
     public ResponseEntityAssertions(ResponseEntity<?> actual) {
@@ -51,6 +53,12 @@ public class ResponseEntityAssertions extends AbstractAssert<ResponseEntityAsser
     public ResponseEntityAssertions is204() {
         isNotNull();
         assertThatStatusCode(204);
+        return this;
+    }
+
+    public ResponseEntityAssertions hasEmptyBody() {
+        isNotNull();
+        Assertions.assertThat(actual.getBody()).isNull();
         return this;
     }
 }
