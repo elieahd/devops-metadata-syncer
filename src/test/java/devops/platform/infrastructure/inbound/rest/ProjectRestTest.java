@@ -227,12 +227,16 @@ class ProjectRestTest extends RestIntegrationTest {
     }
 
     private Project createProject() {
-        Project project = Project.of(ProjectRandomizer.key(), random(String.class));
-        return projectInventory.create(project);
+        return projectInventory.create(
+                Project.of(ProjectRandomizer.key(), random(String.class))
+        );
     }
 
     private Repository createRepository(Project project) {
-        return repositoryInventory.create(project.id(), Repository.of(random(String.class), random(String.class), random(RepositorySource.class)));
+        return repositoryInventory.create(
+                project.id(),
+                Repository.of(random(String.class), random(String.class), random(RepositorySource.class))
+        );
     }
 
 }

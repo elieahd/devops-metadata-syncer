@@ -1,6 +1,7 @@
 package devops.platform.domain.models;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 public record Report(ReportType type,
                      ReportStatus status,
@@ -10,6 +11,6 @@ public record Report(ReportType type,
     public Report(ReportType type,
                   ReportStatus status,
                   String metadata) {
-        this(type, status, LocalDateTime.now(), metadata);
+        this(type, status, LocalDateTime.now(ZoneId.systemDefault()), metadata);
     }
 }
