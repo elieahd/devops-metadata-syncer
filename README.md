@@ -5,63 +5,7 @@
 [![codecov](https://codecov.io/gh/elieahd/devops-metadata-syncer/graph/badge.svg?token=PKuICGh2k3)](https://codecov.io/gh/elieahd/devops-metadata-syncer)
 
 A tool that pull DevOps metadata (Pull Requests, Pipelines, Releases, Vulnerabilities) from multiple repositories given
-a project
-
-## Commands
-
-Every invocation requires the following global argument:
-
-| Argument    | Required | Description                        |
-|-------------|----------|------------------------------------|
-| `--command` | Yes      | The name of the command to execute |
-
-### `sync-project`
-
-Sync Metadata for a given project
-
-**Arguments:**
-
-| Argument    | Required | Type   | Description            |
-|-------------|----------|--------|------------------------|
-| `--project` | Yes      | String | The key of the project |
-
-**Usage:**
-
-```
---command=sync-project --project=<project>
-```
-
-```bash
-java -jar devops-metadata-syncer.jar \
-  --command=sync-project \
-  --name=MyProject 
-```
-
-### `sync-repository`
-
-Sync Metadata for a given repository
-
-**Arguments:**
-
-| Argument        | Required | Type   | Description                                           |
-|-----------------|----------|--------|-------------------------------------------------------|
-| `--organiation` | Yes      | String | The repository organization                           |
-| `--repository`  | Yes      | String | The repository name                                   |
-| `--source`      | No       | String | The repository Source (GitHub, EnterpriseGitHub, ...) |
-
-**Usage:**
-
-```
---command=sync-repository --organization=<org> --repository=<repository> --source=<source>
-```
-
-```bash
-java -jar devops-metadata-syncer.jar \
-  --command=sync-repository \
-  --organization=<org> \
-  --repository=<repository> \ 
-  --source=<source>
-```
+a project and also allow to attach checks reports to projects 
 
 ## Data Model
 
@@ -138,14 +82,35 @@ classDiagram
         +OffsetDateTime resolvedAt
     }
 
+    class Report {
+        +ReportType type
+        +ReportStatus status
+        +LocalDateTime createdAt
+        +String metadata
+    }
+
+    class ReportType {
+        <<enumeration>>
+        MORNING_CHECK
+    }
+
+    class ReportStatus {
+        <<enumeration>>
+        SUCCESS
+        FAILED
+    }
+
     Project "1" --> "*" Repository: has
+    Project "1" --> "*" Report: has
     Repository "1" --> "*" PullRequest: has
     Repository "1" --> "*" Pipeline: has
     Repository "1" --> "*" Vulnerability: has
     Repository "1" --> "*" Release: has
     Pipeline "1" --> "*" PipelineRun: contains
     PullRequest "1" --> "*" PullRequestReview: has
-    Repository "1" --> "1" RepositorySource: source
+    Repository "*" --> "1" RepositorySource: source
+    Report "*" --> "1" ReportStatus: status
+    Report "*" --> "1" ReportType: type
 ```
 
 ## Pipelines
