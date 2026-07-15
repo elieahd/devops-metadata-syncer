@@ -3,7 +3,6 @@ package devops.platform.infrastructure.outbound.database;
 import devops.platform.domain.models.Project;
 import devops.platform.domain.models.Release;
 import devops.platform.domain.models.Repository;
-import devops.platform.domain.models.RepositorySource;
 import devops.platform.domain.models.assertions.ReleaseAssertions;
 import devops.platform.domain.models.randomizers.ReleaseRandomizer;
 import devops.platform.infrastructure.OutboundDatabaseIntegrationTest;
@@ -13,16 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.devt.randomizer.RandomizerUtils.random;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ReleaseInventoryDatabaseAdapterTest extends OutboundDatabaseIntegrationTest {
-
-    @Autowired
-    private ProjectInventoryDatabaseAdapter projectInventory;
-
-    @Autowired
-    private RepositoryInventoryDatabaseAdapter repositoryInventory;
 
     @Autowired
     private ReleaseInventoryDatabaseAdapter sut;
@@ -92,15 +84,5 @@ class ReleaseInventoryDatabaseAdapterTest extends OutboundDatabaseIntegrationTes
         assertThat(anotherRepositoryReleases)
                 .isNotNull()
                 .isNotEmpty();
-    }
-
-    private Project createProject() {
-        Project project = Project.of(random(String.class), random(String.class));
-        return projectInventory.create(project);
-    }
-
-    private Repository createRepository(Project project) {
-        Repository repository = Repository.of(random(String.class), random(String.class), random(RepositorySource.class));
-        return repositoryInventory.create(project.id(), repository);
     }
 }

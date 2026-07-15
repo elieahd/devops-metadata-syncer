@@ -8,6 +8,7 @@ import devops.platform.domain.exceptions.SourceNotFoundException;
 import devops.platform.infrastructure.inbound.rest.responses.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,10 +27,7 @@ public class RestExceptionHandler {
             SourceNotFoundException.class
     })
     public ResponseEntity<ErrorResponse> handleNotFoundException(Exception ex) {
-        LOGGER.warn("[404:{}] {}", ex.getClass().getSimpleName(), ex.getMessage());
-        return ResponseEntity
-                .status(404)
-                .body(new ErrorResponse(NOT_FOUND.name(), ex.getMessage()));
+        return handleError(NOT_FOUND, ex);
     }
 
     @ExceptionHandler({
@@ -37,10 +35,13 @@ public class RestExceptionHandler {
             InvalidReportTypeException.class
     })
     public ResponseEntity<ErrorResponse> handleBadRequest(Exception ex) {
-        LOGGER.warn("[400:{}] {}", ex.getClass().getSimpleName(), ex.getMessage());
-        return ResponseEntity
-                .status(400)
-                .body(new ErrorResponse(BAD_REQUEST.name(), ex.getMessage()));
+        return handleError(BAD_REQUEST, ex);
     }
 
+    private ResponseEntity<ErrorResponse> handleError(HttpStatus httpStatus, Exception ex) {
+        LOGGER.warn("[{}}:{}] {}", httpStatus.value(), ex.getClass().getSimpleName(), ex.getMessage());
+        return ResponseEntity
+                .status(httpStatus.value())
+                .body(new ErrorResponse(httpStatus.name(), ex.getMessage()));
+    }
 }

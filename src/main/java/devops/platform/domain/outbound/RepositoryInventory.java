@@ -13,9 +13,11 @@ public interface RepositoryInventory {
 
     List<Repository> findAllByProjectKey(String projectKey);
 
-    void updateLastSyncTime(Long repositoryId, LocalDateTime lastSyncTime);
+    void updateLastSyncTime(Long repositoryId,
+                            LocalDateTime lastSyncTime);
 
-    Repository create(Long projectId, Repository repository);
+    Repository create(Long projectId,
+                      Repository repository);
 
     Optional<Repository> findOneByOrganizationAndNameAndSource(String organization,
                                                                String name,

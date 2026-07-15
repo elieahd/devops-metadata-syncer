@@ -7,7 +7,8 @@ import java.util.List;
 
 public interface ReportInventory {
 
-    void create(Report report, Project project);
+    void create(Report report,
+                Project project);
 
     List<Report> findAllByProjectId(Long projectId);
 

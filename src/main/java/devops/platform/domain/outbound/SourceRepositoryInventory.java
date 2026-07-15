@@ -9,12 +9,16 @@ import java.util.List;
 
 public interface SourceRepositoryInventory {
 
-    List<PullRequest> findAllPullRequests(String organization, String repository);
+    List<PullRequest> findAllPullRequests(String organization,
+                                          String repository);
 
-    List<Pipeline> findAllWorkflows(String organization, String repository);
+    List<Pipeline> findAllWorkflows(String organization,
+                                    String repository);
 
-    List<Release> findAllReleases(String organization, String repository);
+    List<Release> findAllReleases(String organization,
+                                  String repository);
 
-    List<Vulnerability> findAllVulnerabilities(String organization, String repository);
+    List<Vulnerability> findAllVulnerabilities(String organization,
+                                               String repository);
 
 }
