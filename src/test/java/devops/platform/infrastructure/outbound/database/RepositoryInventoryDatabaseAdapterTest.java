@@ -21,16 +21,13 @@ import static org.assertj.core.api.Assertions.within;
 class RepositoryInventoryDatabaseAdapterTest extends OutboundDatabaseIntegrationTest {
 
     @Autowired
-    private ProjectInventoryDatabaseAdapter projectInventory;
-
-    @Autowired
     private RepositoryInventoryDatabaseAdapter sut;
 
     @Test
     void findAllByProjectId_shouldReturnRepositories() {
         // Arrange
-        Project project = projectInventory.create(Project.of(random(String.class), random(String.class)));
-        Project anotherProject = projectInventory.create(Project.of(random(String.class), random(String.class)));
+        Project project = createProject();
+        Project anotherProject = createProject();
         Repository repository1 = createRepository(project);
         Repository repository2 = createRepository(project);
         createRepository(anotherProject);
@@ -49,7 +46,7 @@ class RepositoryInventoryDatabaseAdapterTest extends OutboundDatabaseIntegration
     @Test
     void findAllByProjectId_shouldReturnEmptyList_whenNoRepositoryFoundForGivenProject() {
         // Arrange
-        Project project = projectInventory.create(Project.of(random(String.class), random(String.class)));
+        Project project = createProject();
         // Act
         List<Repository> repositories = sut.findAllByProjectId(project.id());
         // Assert
@@ -61,7 +58,7 @@ class RepositoryInventoryDatabaseAdapterTest extends OutboundDatabaseIntegration
     @Test
     void updateLastSyncTime_shouldSetLastSyncTime() {
         // Arrange
-        Project project = projectInventory.create(Project.of(random(String.class), random(String.class)));
+        Project project = createProject();
         Repository repository = createRepository(project);
         LocalDateTime lastSyncTime = LocalDateTime.now().minusDays(1).plusHours(1);
         // Act
@@ -90,7 +87,7 @@ class RepositoryInventoryDatabaseAdapterTest extends OutboundDatabaseIntegration
     @Test
     void findOneByOrganizationAndNameAndSource_shouldReturnOptionalOfRepository_evenIfItsCaseInsensitive() {
         // Arrange
-        Project project = projectInventory.create(Project.of(random(String.class), random(String.class)));
+        Project project = createProject();
         Repository existingRepository = createRepository(project);
 
         String organization = existingRepository.organization().toLowerCase(Locale.ROOT);
@@ -106,7 +103,7 @@ class RepositoryInventoryDatabaseAdapterTest extends OutboundDatabaseIntegration
     @Test
     void findAllByProjectKey_shouldReturnEmptyList_whenNoRepositoryFound() {
         // Arrange
-        Project project = projectInventory.create(Project.of(random(String.class), random(String.class)));
+        Project project = createProject();
         // Act
         List<Repository> repositories = sut.findAllByProjectKey(project.key());
         // Assert
@@ -118,8 +115,8 @@ class RepositoryInventoryDatabaseAdapterTest extends OutboundDatabaseIntegration
     @Test
     void findAllByProjectKey_shouldReturnRepositoryByProject() {
         // Arrange
-        Project project = projectInventory.create(Project.of(random(String.class), random(String.class)));
-        Project anotherProject = projectInventory.create(Project.of(random(String.class), random(String.class)));
+        Project project = createProject();
+        Project anotherProject = createProject();
         Repository repository1 = createRepository(project);
         Repository repository2 = createRepository(project);
         createRepository(anotherProject);
@@ -133,9 +130,5 @@ class RepositoryInventoryDatabaseAdapterTest extends OutboundDatabaseIntegration
 
         RepositoryAssertions.assertThat(repositories.getFirst()).isEqualTo(repository1);
         RepositoryAssertions.assertThat(repositories.get(1)).isEqualTo(repository2);
-    }
-
-    private Repository createRepository(Project project) {
-        return sut.create(project.id(), Repository.of(random(String.class), random(String.class), random(RepositorySource.class)));
     }
 }

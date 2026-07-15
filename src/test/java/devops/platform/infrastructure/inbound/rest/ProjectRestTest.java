@@ -5,13 +5,10 @@ import devops.platform.domain.models.Report;
 import devops.platform.domain.models.ReportStatus;
 import devops.platform.domain.models.ReportType;
 import devops.platform.domain.models.Repository;
-import devops.platform.domain.models.RepositorySource;
 import devops.platform.domain.models.assertions.ReportAssertions;
 import devops.platform.domain.models.randomizers.ProjectRandomizer;
 import devops.platform.domain.models.randomizers.ReportRandomizer;
-import devops.platform.domain.outbound.ProjectInventory;
 import devops.platform.domain.outbound.ReportInventory;
-import devops.platform.domain.outbound.RepositoryInventory;
 import devops.platform.infrastructure.RestIntegrationTest;
 import devops.platform.infrastructure.inbound.rest.requests.CreateReportRequest;
 import devops.platform.infrastructure.inbound.rest.responses.ErrorResponse;
@@ -31,12 +28,6 @@ import static com.devt.randomizer.RandomizerUtils.random;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ProjectRestTest extends RestIntegrationTest {
-
-    @Autowired
-    private ProjectInventory projectInventory;
-
-    @Autowired
-    private RepositoryInventory repositoryInventory;
 
     @Autowired
     private ReportInventory reportInventory;
@@ -224,19 +215,6 @@ class ProjectRestTest extends RestIntegrationTest {
                 .hasStatus(ReportStatus.valueOf(request.status()))
                 .hasMetadata(request.metadata())
                 .hasCreatedDateAsNow();
-    }
-
-    private Project createProject() {
-        return projectInventory.create(
-                Project.of(ProjectRandomizer.key(), random(String.class))
-        );
-    }
-
-    private Repository createRepository(Project project) {
-        return repositoryInventory.create(
-                project.id(),
-                Repository.of(random(String.class), random(String.class), random(RepositorySource.class))
-        );
     }
 
 }

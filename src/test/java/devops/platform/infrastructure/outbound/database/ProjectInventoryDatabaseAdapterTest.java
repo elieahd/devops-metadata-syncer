@@ -3,7 +3,6 @@ package devops.platform.infrastructure.outbound.database;
 import devops.platform.domain.models.Project;
 import devops.platform.infrastructure.OutboundDatabaseIntegrationTest;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
@@ -14,15 +13,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ProjectInventoryDatabaseAdapterTest extends OutboundDatabaseIntegrationTest {
 
-    @Autowired
-    private ProjectInventoryDatabaseAdapter sut;
-
     @Test
     void findByKey_shouldReturnOptionalOfEmpty_whenNotFound() {
         // Arrange
         String key = random(String.class);
         // Act
-        Optional<Project> project = sut.findByKey(key);
+        Optional<Project> project = projectInventory.findByKey(key);
         // Assert
         assertThat(project).isEmpty();
     }
@@ -32,7 +28,7 @@ class ProjectInventoryDatabaseAdapterTest extends OutboundDatabaseIntegrationTes
         // Arrange
         Project existingProject = createProject();
         // Act
-        Optional<Project> project = sut.findByKey(existingProject.key());
+        Optional<Project> project = projectInventory.findByKey(existingProject.key());
         // Assert
         assertThat(project).isPresent();
         assertThat(project.get().id()).isNotNull();
@@ -45,7 +41,7 @@ class ProjectInventoryDatabaseAdapterTest extends OutboundDatabaseIntegrationTes
         // Arrange
         Project project = createProject();
         // Act
-        boolean exists = sut.existsByKey(project.key());
+        boolean exists = projectInventory.existsByKey(project.key());
         // Assert
         assertThat(exists).isTrue();
     }
@@ -55,7 +51,7 @@ class ProjectInventoryDatabaseAdapterTest extends OutboundDatabaseIntegrationTes
         // Arrange
         String key = random(String.class);
         // Act
-        boolean exists = sut.existsByKey(key);
+        boolean exists = projectInventory.existsByKey(key);
         // Assert
         assertThat(exists).isFalse();
     }
@@ -68,18 +64,12 @@ class ProjectInventoryDatabaseAdapterTest extends OutboundDatabaseIntegrationTes
         Project project2 = createProject();
         Project project3 = createProject();
         // Act
-        List<Project> projects = sut.findAll();
+        List<Project> projects = projectInventory.findAll();
         // Assert
         assertThat(projects)
                 .isNotNull()
                 .isNotEmpty()
                 .hasSize(3)
                 .contains(project1, project2, project3);
-    }
-
-    private Project createProject() {
-        String key = random(String.class);
-        String name = random(String.class);
-        return sut.create(Project.of(key, name));
     }
 }
