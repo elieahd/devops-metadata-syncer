@@ -1,11 +1,18 @@
-# DevOps Metadata Syncer
+# DevOps Platform
 
 ![java-26](https://img.shields.io/badge/java-26-red)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=elieahd_devops-metadata-syncer&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=elieahd_devops-metadata-syncer)
 [![codecov](https://codecov.io/gh/elieahd/devops-metadata-syncer/graph/badge.svg?token=PKuICGh2k3)](https://codecov.io/gh/elieahd/devops-metadata-syncer)
 
 A tool that pull DevOps metadata (Pull Requests, Pipelines, Releases, Vulnerabilities) from multiple repositories given
-a project and also allow to attach checks reports to projects 
+a project and also allow to attach checks reports to projects
+
+## Main operations via Endpoints
+
+| Endpoints                                                   | Description                                      |
+|-------------------------------------------------------------|--------------------------------------------------|
+| `PUT` `/api/v1/projects/{projectKey}/do-sync`               | Synchronize all repositories for a given project |
+| `POST` `/api/v1/projects/{projectKey}/reports/{reportType}` | Add report for a given project                   |
 
 ## Data Model
 
