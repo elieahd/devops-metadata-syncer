@@ -33,7 +33,7 @@
         <!-- dependencies -->
         <spring.boot.version>4.1.0</spring.boot.version>
         <okhttp.version>5.4.0</okhttp.version>
-        <mybatis.version>4.0.1</mybatis.version>
+        <mybatis.version>4.1.0</mybatis.version>
         <spring.doc.version>3.0.3</spring.doc.version>
         <!-- test dependencies -->
         <archunit.version>1.4.2</archunit.version>
