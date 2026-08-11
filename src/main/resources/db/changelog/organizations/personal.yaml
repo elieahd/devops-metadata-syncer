@@ -7,9 +7,12 @@ databaseChangeLog:
             tableName: organization
             columns:
               - column:
-                  name: label
+                  name: acronym
                   value: "Personal"
+              - column:
+                  name: name
+                  value: "My Personal Organization"
       rollback:
         - delete:
             tableName: organization
-            where: "label = 'Personal'"
+            where: "acronym = 'Personal'"

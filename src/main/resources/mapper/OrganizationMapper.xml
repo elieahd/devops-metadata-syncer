@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="devops.platform.infrastructure.outbound.database.dao.OrganizationDao">
+
+    <resultMap id="organizationResultMap" type="devops.platform.domain.models.Organization">
+        <constructor>
+            <arg column="id" javaType="Long"/>
+            <arg column="acronym" javaType="java.lang.String"/>
+            <arg column="name" javaType="java.lang.String"/>
+            <arg column="description" javaType="java.lang.String"/>
+        </constructor>
+    </resultMap>
+
+    <select id="findByAcronym" resultMap="organizationResultMap">
+        SELECT id, acronym, name, description
+        FROM organization
+        WHERE LOWER(acronym) = LOWER(#{acronym})
+    </select>
+
+    <select id="create" resultType="long">
+        INSERT INTO organization (acronym, name, description)
+        VALUES (#{organization.acronym}, #{organization.name}, #{organization.description})
+        RETURNING id
+    </select>
+
+</mapper>

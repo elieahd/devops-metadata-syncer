@@ -22,17 +22,20 @@ The following class diagram describes the internal data structures of a Project
 classDiagram
     direction LR
 
+    class Organization {
+        +String acronym
+        +String name
+        +String description
+    }
+
     class Project {
-        +Long id
         +String key
         +String name
     }
 
     class Repository {
-        +Long id
         +String organization
         +String name
-        +RepositorySource source
         +LocalDateTime lastSyncTime
     }
 
@@ -46,7 +49,6 @@ classDiagram
     class Pipeline {
         +String name
         +String sourceId
-        +List~PipelineRun~ runs
     }
 
     class PipelineRun {
@@ -66,7 +68,6 @@ classDiagram
         +OffsetDateTime closedAt
         +String author
         +boolean isAuthorUser
-        +List~PullRequestReview~ reviews
     }
 
     class PullRequestReview {
@@ -90,8 +91,6 @@ classDiagram
     }
 
     class Report {
-        +ReportType type
-        +ReportStatus status
         +LocalDateTime createdAt
         +String metadata
     }
@@ -107,6 +106,8 @@ classDiagram
         FAILED
     }
 
+    Organization "0..1" --> "*" Organization: parent-of
+    Organization "1" --> "*" Project: has
     Project "1" --> "*" Repository: has
     Project "1" --> "*" Report: has
     Repository "1" --> "*" PullRequest: has
@@ -127,3 +128,10 @@ classDiagram
 | `push` on `main` | Pre-Checks (test + codecov + sonar)                                        | [![🚀 Deploy](https://github.com/elieahd/devops-metadata-syncer/actions/workflows/deploy.yaml/badge.svg)](https://github.com/elieahd/devops-metadata-syncer/actions/workflows/deploy.yaml)                                              |
 | `pull request`   | Checks (test + sonar)                                                      | [![✅ PR checks](https://github.com/elieahd/devops-metadata-syncer/actions/workflows/pr-checks.yaml/badge.svg)](https://github.com/elieahd/devops-metadata-syncer/actions/workflows/pr-checks.yaml)                                      |
 | `weekly`         | Dependabot updates <br/> maintaining maven and github actions dependencies | [![Dependabot Updates](https://github.com/elieahd/devops-metadata-syncer/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/elieahd/devops-metadata-syncer/actions/workflows/dependabot/dependabot-updates) |
+
+
+TODO 
+- ProjectRest 
+- OrganizationDao
+- ProjectContactDao
+- Project (org)

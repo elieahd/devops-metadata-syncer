@@ -1,9 +1,11 @@
 package devops.platform.infrastructure;
 
+import devops.platform.domain.models.Organization;
 import devops.platform.domain.models.Project;
 import devops.platform.domain.models.Repository;
 import devops.platform.domain.models.RepositorySource;
 import devops.platform.domain.models.randomizers.ProjectRandomizer;
+import devops.platform.domain.outbound.OrganizationInventory;
 import devops.platform.domain.outbound.ProjectInventory;
 import devops.platform.domain.outbound.RepositoryInventory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +35,24 @@ public abstract class IntegrationTest {
     @Autowired
     protected RepositoryInventory repositoryInventory;
 
+    @Autowired
+    protected OrganizationInventory organizationInventory;
+
+    protected Organization createOrganization() {
+        Organization organization = Organization.of(
+                random(String.class),
+                random(String.class),
+                random(String.class)
+        );
+        return organizationInventory.create(organization);
+    }
+
     protected Project createProject() {
+        Organization organization = createOrganization();
         String key = ProjectRandomizer.key();
         String name = random(String.class);
         Project project = Project.of(key, name);
-        return projectInventory.create(project);
+        return projectInventory.create(project, organization);
     }
 
     protected Repository createRepository(Project project) {

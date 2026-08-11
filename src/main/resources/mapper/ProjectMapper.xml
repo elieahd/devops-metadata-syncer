@@ -27,8 +27,8 @@
     </select>
 
     <select id="create" resultType="long">
-        INSERT INTO project (key, name)
-        VALUES (#{project.key}, #{project.name})
+        INSERT INTO project (key, name, organization_id)
+        VALUES (#{project.key}, #{project.name}, #{organizationId})
         RETURNING id
     </select>
 

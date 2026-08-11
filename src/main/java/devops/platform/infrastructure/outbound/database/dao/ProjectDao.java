@@ -13,7 +13,8 @@ public interface ProjectDao {
 
     Project findByKey(@Param("key") String key);
 
-    Long create(@Param("project") Project project);
+    Long create(@Param("project") Project project,
+                @Param("organizationId") Long organizationId);
 
     boolean existsByKey(@Param("key") String key);
 }

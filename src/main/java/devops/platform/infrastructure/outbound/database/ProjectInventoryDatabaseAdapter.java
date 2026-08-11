@@ -1,5 +1,6 @@
 package devops.platform.infrastructure.outbound.database;
 
+import devops.platform.domain.models.Organization;
 import devops.platform.domain.models.Project;
 import devops.platform.domain.outbound.ProjectInventory;
 import devops.platform.infrastructure.outbound.OutboundAdapter;
@@ -29,8 +30,8 @@ public class ProjectInventoryDatabaseAdapter implements ProjectInventory {
     }
 
     @Override
-    public Project create(Project project) {
-        Long id = dao.create(project);
+    public Project create(Project project, Organization organization) {
+        Long id = dao.create(project, organization.id());
         return new Project(
                 id,
                 project.key(),

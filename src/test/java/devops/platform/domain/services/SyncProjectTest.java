@@ -3,8 +3,10 @@ package devops.platform.domain.services;
 import devops.platform.domain.exceptions.ProjectNotFoundException;
 import devops.platform.domain.exceptions.SourceNotFoundException;
 import devops.platform.domain.inbound.SyncProject;
+import devops.platform.domain.models.Organization;
 import devops.platform.domain.models.Project;
 import devops.platform.domain.models.Repository;
+import devops.platform.domain.models.randomizers.OrganizationRandomizer;
 import devops.platform.domain.models.randomizers.ProjectRandomizer;
 import devops.platform.domain.models.randomizers.RepositoryRandomizer;
 import devops.platform.domain.outbound.ProjectInventory;
@@ -52,8 +54,9 @@ class SyncProjectTest {
     @Test
     void sync_shouldDoNothing_whenNoRepositoriesFoundPerProject() throws SourceNotFoundException, ProjectNotFoundException {
         // Arrange
+        Organization organization = OrganizationRandomizer.random();
         Project project = ProjectRandomizer.random();
-        projectInventory.create(project);
+        projectInventory.create(project, organization);
         // Act
         sut.sync(project.key());
         // Assert
@@ -63,15 +66,17 @@ class SyncProjectTest {
     @Test
     void sync_shouldSyncAllRepositories() throws SourceNotFoundException, ProjectNotFoundException {
         // Arrange
+        Organization organization = OrganizationRandomizer.random();
+
         Project project = ProjectRandomizer.random();
-        projectInventory.create(project);
+        projectInventory.create(project, organization);
         Repository repository1 = RepositoryRandomizer.random();
         repositoryInventory.create(project.id(), repository1);
         Repository repository2 = RepositoryRandomizer.random();
         repositoryInventory.create(project.id(), repository2);
 
         Project anotherProject = ProjectRandomizer.random();
-        projectInventory.create(anotherProject);
+        projectInventory.create(anotherProject, organization);
         Repository repository3 = RepositoryRandomizer.random();
         repositoryInventory.create(anotherProject.id(), repository3);
         // Act

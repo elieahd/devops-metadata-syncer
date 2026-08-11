@@ -2,6 +2,8 @@ package devops.platform.infrastructure.inbound.rest.exceptions;
 
 import devops.platform.domain.exceptions.InvalidReportStatusException;
 import devops.platform.domain.exceptions.InvalidReportTypeException;
+import devops.platform.domain.exceptions.OrganizationNotFoundException;
+import devops.platform.domain.exceptions.ProjectAlreadyExistsException;
 import devops.platform.domain.exceptions.ProjectNotFoundException;
 import devops.platform.domain.exceptions.RepositoryNotFoundException;
 import devops.platform.domain.exceptions.SourceNotFoundException;
@@ -24,7 +26,8 @@ public class RestExceptionHandler {
     @ExceptionHandler({
             ProjectNotFoundException.class,
             RepositoryNotFoundException.class,
-            SourceNotFoundException.class
+            SourceNotFoundException.class,
+            OrganizationNotFoundException.class
     })
     public ResponseEntity<ErrorResponse> handleNotFoundException(Exception ex) {
         return handleError(NOT_FOUND, ex);
@@ -32,7 +35,8 @@ public class RestExceptionHandler {
 
     @ExceptionHandler({
             InvalidReportStatusException.class,
-            InvalidReportTypeException.class
+            InvalidReportTypeException.class,
+            ProjectAlreadyExistsException.class
     })
     public ResponseEntity<ErrorResponse> handleBadRequest(Exception ex) {
         return handleError(BAD_REQUEST, ex);

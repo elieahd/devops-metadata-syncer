@@ -2,8 +2,10 @@ package devops.platform.domain.services;
 
 import devops.platform.domain.exceptions.ProjectNotFoundException;
 import devops.platform.domain.inbound.GetRepositories;
+import devops.platform.domain.models.Organization;
 import devops.platform.domain.models.Project;
 import devops.platform.domain.models.Repository;
+import devops.platform.domain.models.randomizers.OrganizationRandomizer;
 import devops.platform.domain.models.randomizers.ProjectRandomizer;
 import devops.platform.domain.models.randomizers.RepositoryRandomizer;
 import devops.platform.domain.outbound.ProjectInventory;
@@ -34,15 +36,16 @@ class GetRepositoriesTest {
     @Test
     void getAllByProjectKey_shouldReturnAllRepositoriesByProjectKey() throws ProjectNotFoundException {
         // Arrange
+        Organization organization = OrganizationRandomizer.random();
         Project project = ProjectRandomizer.random();
-        projectInventory.create(project);
+        projectInventory.create(project, organization);
         Repository repository1 = RepositoryRandomizer.random();
         repositoryInventory.create(project, repository1);
         Repository repository2 = RepositoryRandomizer.random();
         repositoryInventory.create(project, repository2);
 
         Project anotherProject = ProjectRandomizer.random();
-        projectInventory.create(anotherProject);
+        projectInventory.create(anotherProject, organization);
         Repository anotherRepository = RepositoryRandomizer.random();
         repositoryInventory.create(anotherProject, anotherRepository);
         // Act
