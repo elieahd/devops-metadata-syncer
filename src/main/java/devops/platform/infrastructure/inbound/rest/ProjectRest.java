@@ -2,16 +2,20 @@ package devops.platform.infrastructure.inbound.rest;
 
 import devops.platform.domain.exceptions.InvalidReportStatusException;
 import devops.platform.domain.exceptions.InvalidReportTypeException;
+import devops.platform.domain.exceptions.OrganizationNotFoundException;
+import devops.platform.domain.exceptions.ProjectAlreadyExistsException;
 import devops.platform.domain.exceptions.ProjectNotFoundException;
 import devops.platform.domain.exceptions.SourceNotFoundException;
 import devops.platform.domain.inbound.CreateProjectReport;
 import devops.platform.domain.inbound.GetProjects;
 import devops.platform.domain.inbound.GetRepositories;
+import devops.platform.domain.inbound.OnboardProject;
 import devops.platform.domain.inbound.SyncProject;
 import devops.platform.domain.models.Project;
 import devops.platform.domain.models.ReportType;
 import devops.platform.domain.models.Repository;
 import devops.platform.infrastructure.inbound.rest.requests.CreateReportRequest;
+import devops.platform.infrastructure.inbound.rest.requests.OnboardProjectRequest;
 import devops.platform.infrastructure.inbound.rest.responses.ErrorResponse;
 import devops.platform.infrastructure.inbound.rest.responses.ProjectView;
 import devops.platform.infrastructure.inbound.rest.responses.RepositoryView;
@@ -29,6 +33,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.net.URI;
 import java.util.List;
 
 @RestControllerDocumented(
@@ -42,15 +47,18 @@ public class ProjectRest {
     private final GetRepositories getRepositories;
     private final SyncProject syncProject;
     private final CreateProjectReport createProjectReport;
+    private final OnboardProject onboardProject;
 
     public ProjectRest(GetProjects getProjects,
                        GetRepositories getRepositories,
                        SyncProject syncProject,
-                       CreateProjectReport createProjectReport) {
+                       CreateProjectReport createProjectReport,
+                       OnboardProject onboardProject) {
         this.getProjects = getProjects;
         this.getRepositories = getRepositories;
         this.syncProject = syncProject;
         this.createProjectReport = createProjectReport;
+        this.onboardProject = onboardProject;
     }
 
     @GetMapping
@@ -216,4 +224,58 @@ public class ProjectRest {
         return ResponseEntity.accepted().build();
     }
 
+    @PostMapping
+    @Operation(
+            summary = "Onboard a new project",
+            description = "Create new project",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Project onboarded"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Project not found by key",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class,
+                                            example = """
+                                                    {
+                                                        "errorCode": "NOT_FOUND",
+                                                        "errorMessage": "Organization '{projectKey}' not found"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Project already exists",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class,
+                                            example = """
+                                                    {
+                                                        "errorCode": "BAD_REQUEST",
+                                                        "errorMessage": "Project '{projectKey}' already exists"
+                                                    }
+                                                    """
+                                    )
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<Project> onboardProject(@RequestBody OnboardProjectRequest request) throws OrganizationNotFoundException, ProjectAlreadyExistsException {
+        Project project = onboardProject.onboard(
+                request.organizationAcronym(),
+                request.projectKey(),
+                request.projectName(),
+                request.contacts()
+        );
+        return ResponseEntity
+                .created(URI.create("/api/v1/projects/%s".formatted(project.key())))
+                .body(project);
+    }
 }

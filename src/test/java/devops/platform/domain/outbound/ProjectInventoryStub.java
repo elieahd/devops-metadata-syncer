@@ -1,5 +1,6 @@
 package devops.platform.domain.outbound;
 
+import devops.platform.domain.models.Organization;
 import devops.platform.domain.models.Project;
 
 import java.util.HashMap;
@@ -29,7 +30,7 @@ public class ProjectInventoryStub implements ProjectInventory {
     }
 
     @Override
-    public Project create(Project project) {
+    public Project create(Project project, Organization organization) {
         projects.put(project.key(), project);
         return project;
     }

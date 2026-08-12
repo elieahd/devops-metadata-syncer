@@ -1,16 +1,22 @@
 package devops.platform.infrastructure.inbound.rest;
 
+import devops.platform.domain.models.Organization;
 import devops.platform.domain.models.Project;
+import devops.platform.domain.models.ProjectContact;
 import devops.platform.domain.models.Report;
 import devops.platform.domain.models.ReportStatus;
 import devops.platform.domain.models.ReportType;
 import devops.platform.domain.models.Repository;
+import devops.platform.domain.models.assertions.ProjectAssertions;
 import devops.platform.domain.models.assertions.ReportAssertions;
+import devops.platform.domain.models.randomizers.ProjectContactRandomizer;
 import devops.platform.domain.models.randomizers.ProjectRandomizer;
 import devops.platform.domain.models.randomizers.ReportRandomizer;
+import devops.platform.domain.outbound.ProjectContactInventory;
 import devops.platform.domain.outbound.ReportInventory;
 import devops.platform.infrastructure.RestIntegrationTest;
 import devops.platform.infrastructure.inbound.rest.requests.CreateReportRequest;
+import devops.platform.infrastructure.inbound.rest.requests.OnboardProjectRequest;
 import devops.platform.infrastructure.inbound.rest.responses.ErrorResponse;
 import devops.platform.infrastructure.inbound.rest.responses.ErrorResponseAssertions;
 import devops.platform.infrastructure.inbound.rest.responses.ProjectView;
@@ -31,6 +37,9 @@ class ProjectRestTest extends RestIntegrationTest {
 
     @Autowired
     private ReportInventory reportInventory;
+
+    @Autowired
+    private ProjectContactInventory projectContactInventory;
 
     @Test
     @Sql(scripts = {"/sql/clean-up.sql"})
@@ -215,6 +224,82 @@ class ProjectRestTest extends RestIntegrationTest {
                 .hasStatus(ReportStatus.valueOf(request.status()))
                 .hasMetadata(request.metadata())
                 .hasCreatedDateAsNow();
+    }
+
+    @Test
+    void onboardProject_shouldCreateProjectWithContacts() {
+        // Arrange
+        Organization organization = createOrganization();
+        ProjectContact contact1 = ProjectContactRandomizer.random();
+        ProjectContact contact2 = ProjectContactRandomizer.random();
+        OnboardProjectRequest request = new OnboardProjectRequest(
+                organization.acronym(),
+                ProjectRandomizer.key(),
+                random(String.class),
+                List.of(contact1, contact2)
+        );
+        // Act
+        ResponseEntity<Project> response = post("api/v1/projects", request, Project.class);
+        // Assert
+        ResponseEntityAssertions.assertThat(response)
+                .is201()
+                .hasHeaderLocation("/api/v1/projects/%s".formatted(request.projectKey()));
+        assertThat(projectInventory.existsByKey(request.projectKey())).isTrue();
+        Project createdProject = response.getBody();
+        ProjectAssertions.assertThat(createdProject)
+                .hasKey(request.projectKey())
+                .hasName(request.projectName())
+                .hasNonNullId();
+        List<ProjectContact> createdProjects = projectContactInventory.findAllByProject(createdProject);
+        assertThat(createdProjects)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(2)
+                .contains(contact1, contact2);
+    }
+
+    @Test
+    void onboardProject_shouldThrowProjectAlreadyExistsException() {
+        // Arrange
+        Organization organization = createOrganization();
+        Project existingProjectWithSameKey = createProject();
+        ProjectContact contact1 = ProjectContactRandomizer.random();
+        ProjectContact contact2 = ProjectContactRandomizer.random();
+        OnboardProjectRequest request = new OnboardProjectRequest(
+                organization.acronym(),
+                existingProjectWithSameKey.key(),
+                random(String.class),
+                List.of(contact1, contact2)
+        );
+        // Act
+        ResponseEntity<ErrorResponse> response = post("api/v1/projects", request, ErrorResponse.class);
+        // Assert
+        ResponseEntityAssertions.assertThat(response).is400();
+        ErrorResponseAssertions.assertThat(response.getBody())
+                .hasCode("BAD_REQUEST")
+                .hasMessage("Project '%s' already exists".formatted(existingProjectWithSameKey.key()));
+    }
+
+    @Test
+    void onboardProject_shouldThrowOrganizationNotFound() {
+        // Arrange
+        String organizationAcronym = random(String.class);
+        ProjectContact contact1 = ProjectContactRandomizer.random();
+        ProjectContact contact2 = ProjectContactRandomizer.random();
+        OnboardProjectRequest request = new OnboardProjectRequest(
+                organizationAcronym,
+                ProjectRandomizer.key(),
+                random(String.class),
+                List.of(contact1, contact2)
+        );
+        // Act
+        ResponseEntity<ErrorResponse> response = post("api/v1/projects", request, ErrorResponse.class);
+        // Assert
+        ResponseEntityAssertions.assertThat(response).is404();
+        ErrorResponseAssertions.assertThat(response.getBody())
+                .hasCode("NOT_FOUND")
+                .hasMessage("Organization '%s' not found".formatted(organizationAcronym));
+
     }
 
 }

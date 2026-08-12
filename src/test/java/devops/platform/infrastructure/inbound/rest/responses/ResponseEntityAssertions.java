@@ -4,7 +4,7 @@ import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 import org.springframework.http.ResponseEntity;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.net.URI;
 
 public class ResponseEntityAssertions extends AbstractAssert<ResponseEntityAssertions, ResponseEntity<?>> {
 
@@ -61,4 +61,11 @@ public class ResponseEntityAssertions extends AbstractAssert<ResponseEntityAsser
         Assertions.assertThat(actual.getBody()).isNull();
         return this;
     }
+
+    public ResponseEntityAssertions hasHeaderLocation(String location) {
+        isNotNull();
+        Assertions.assertThat(actual.getHeaders().getLocation()).isEqualTo(URI.create(location));
+        return this;
+    }
+
 }

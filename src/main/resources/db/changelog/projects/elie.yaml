@@ -14,7 +14,7 @@ databaseChangeLog:
                   value: "Elie AHD"
               - column:
                   name: organization_id
-                  valueComputed: "(SELECT id FROM organization WHERE label = 'Personal')"
+                  valueComputed: "(SELECT id FROM organization WHERE acronym = 'Personal')"
         - insert:
             tableName: project_contact
             columns:

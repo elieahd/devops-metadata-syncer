@@ -1,5 +1,6 @@
 package devops.platform.domain.outbound;
 
+import devops.platform.domain.models.Organization;
 import devops.platform.domain.models.Project;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public interface ProjectInventory {
 
     Optional<Project> findByKey(String key);
 
-    Project create(Project project);
+    Project create(Project project, Organization organization);
 
     boolean existsByKey(String projectKey);
 }

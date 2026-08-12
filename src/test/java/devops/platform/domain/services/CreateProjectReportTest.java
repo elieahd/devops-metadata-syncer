@@ -4,11 +4,13 @@ import devops.platform.domain.exceptions.InvalidReportStatusException;
 import devops.platform.domain.exceptions.InvalidReportTypeException;
 import devops.platform.domain.exceptions.ProjectNotFoundException;
 import devops.platform.domain.inbound.CreateProjectReport;
+import devops.platform.domain.models.Organization;
 import devops.platform.domain.models.Project;
 import devops.platform.domain.models.Report;
 import devops.platform.domain.models.ReportStatus;
 import devops.platform.domain.models.ReportType;
 import devops.platform.domain.models.assertions.ReportAssertions;
+import devops.platform.domain.models.randomizers.OrganizationRandomizer;
 import devops.platform.domain.models.randomizers.ProjectRandomizer;
 import devops.platform.domain.models.randomizers.ReportRandomizer;
 import devops.platform.domain.outbound.ProjectInventory;
@@ -55,7 +57,10 @@ class CreateProjectReportTest {
     @Test
     void create_shouldThrowException_whenReportTypeIsNotValid() {
         // Arrange
-        Project project = projectInventory.create(Project.of(ProjectRandomizer.key(), random(String.class)));
+        Project project = projectInventory.create(
+                Project.of(ProjectRandomizer.key(), random(String.class)),
+                OrganizationRandomizer.random()
+        );
         String type = random(String.class);
         String status = random(ReportStatus.class).toString();
         String metadata = ReportRandomizer.metadata();
@@ -71,7 +76,10 @@ class CreateProjectReportTest {
     @Test
     void create_shouldThrowException_whenReportStatusIsNotValid() {
         // Arrange
-        Project project = projectInventory.create(Project.of(ProjectRandomizer.key(), random(String.class)));
+        Project project = projectInventory.create(
+                Project.of(ProjectRandomizer.key(), random(String.class)),
+                OrganizationRandomizer.random()
+        );
         String type = random(ReportType.class).toString();
         String status = random(String.class);
         String metadata = ReportRandomizer.metadata();
@@ -86,7 +94,10 @@ class CreateProjectReportTest {
     @Test
     void create_shouldStoreProjectReport() throws ProjectNotFoundException, InvalidReportStatusException, InvalidReportTypeException {
         // Arrange
-        Project project = projectInventory.create(Project.of(ProjectRandomizer.key(), random(String.class)));
+        Project project = projectInventory.create(
+                Project.of(ProjectRandomizer.key(), random(String.class)),
+                OrganizationRandomizer.random()
+        );
         ReportType type = random(ReportType.class);
         ReportStatus status = random(ReportStatus.class);
         String metadata = ReportRandomizer.metadata();

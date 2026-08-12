@@ -10,8 +10,8 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>DevOps Platform</name>
     <description>
-        DevOps Platform : tool that pull DevOps metadata (Pull Requests, Pipelines, Releases,
-        Vulnerabilities) from multiple repositories given a project, and also will store health check reports
+        DevOps Platform: tool that pull DevOps metadata (Pull Requests, Pipelines, Releases,
+        Vulnerabilities) from multiple repositories given a project, and also will store project reports
     </description>
 
     <dependencyManagement>
