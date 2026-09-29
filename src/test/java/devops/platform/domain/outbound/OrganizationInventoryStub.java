@@ -16,10 +16,7 @@ public class OrganizationInventoryStub implements OrganizationInventory {
 
     @Override
     public Optional<Organization> findByAcronym(String acronym) {
-        if (!organizationsByAcronym.containsKey(acronym)) {
-            return Optional.empty();
-        }
-        return Optional.of(organizationsByAcronym.get(acronym));
+        return Optional.ofNullable(organizationsByAcronym.get(acronym));
     }
 
     @Override

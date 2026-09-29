@@ -23,7 +23,7 @@ public class PullRequestInventoryStub implements PullRequestInventory {
     @Override
     public void insertAll(Long repositoryId, List<PullRequest> pullRequests) {
         pullRequestsByRepositoryId
-                .computeIfAbsent(repositoryId, id -> new ArrayList<>())
+                .computeIfAbsent(repositoryId, _ -> new ArrayList<>())
                 .addAll(pullRequests);
     }
 

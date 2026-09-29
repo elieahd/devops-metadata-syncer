@@ -23,7 +23,7 @@ public class ReleaseInventoryStub implements ReleaseInventory {
     @Override
     public void insertAll(Long repositoryId, List<Release> releases) {
         releasesByRepositoryId
-                .computeIfAbsent(repositoryId, id -> new ArrayList<>())
+                .computeIfAbsent(repositoryId, _ -> new ArrayList<>())
                 .addAll(releases);
     }
 

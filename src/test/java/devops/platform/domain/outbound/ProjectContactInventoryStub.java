@@ -3,6 +3,7 @@ package devops.platform.domain.outbound;
 import devops.platform.domain.models.Project;
 import devops.platform.domain.models.ProjectContact;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,9 @@ public class ProjectContactInventoryStub implements ProjectContactInventory {
 
     @Override
     public void createAll(List<ProjectContact> projectContacts, Project project) {
-        contactsPerProjectId.put(project.id(), projectContacts);
+        contactsPerProjectId
+                .computeIfAbsent(project.id(), _ -> new ArrayList<>())
+                .addAll(projectContacts);
     }
 
     @Override

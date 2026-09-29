@@ -24,7 +24,11 @@ public class ProjectReportService implements CreateProjectReport {
     }
 
     @Override
-    public void create(String projectKey, String type, String status, String metadata) throws ProjectNotFoundException, InvalidReportTypeException, InvalidReportStatusException {
+    public void create(String projectKey,
+                       String type,
+                       String status,
+                       String metadata) throws ProjectNotFoundException, InvalidReportTypeException, InvalidReportStatusException {
+
         Project project = projectInventory.findByKey(projectKey)
                 .orElseThrow(() -> new ProjectNotFoundException(projectKey));
 
