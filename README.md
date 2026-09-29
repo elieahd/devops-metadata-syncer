@@ -1,6 +1,6 @@
 # DevOps Platform
 
-![java-26](https://img.shields.io/badge/java-26-red)
+![java-27](https://img.shields.io/badge/java-27-red)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=elieahd_devops-metadata-syncer&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=elieahd_devops-metadata-syncer)
 [![codecov](https://codecov.io/gh/elieahd/devops-metadata-syncer/graph/badge.svg?token=PKuICGh2k3)](https://codecov.io/gh/elieahd/devops-metadata-syncer)
 
